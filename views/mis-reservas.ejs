@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="es">
+<%- include('partials/head') %>
+<body style="background: #F4F6F8;">
+
+<%- include('partials/header') %>
+
+<main class="container" style="padding: 60px 20px; min-height: 70vh;">
+  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px;">
+    <h1 style="color: var(--navy); font-weight: 800; font-size: 2.5rem; letter-spacing: -1px;">Mis Reservas</h1>
+    <a href="/" class="btn" style="background: #fff; color: var(--navy); border: 1px solid #E2E8F0; padding: 10px 20px; border-radius: 8px; font-weight: 600;">← Volver</a>
+  </div>
+
+  <% if (reservas.length === 0) { %>
+    <div style="background: #fff; border-radius: 16px; padding: 60px 20px; text-align: center; box-shadow: 0 4px 20px rgba(0,0,0,0.03);">
+      <h3 style="color: var(--navy); font-size: 1.5rem; margin-bottom: 10px;">Aún no tienes reservas</h3>
+      <p style="color: var(--mist); margin-bottom: 25px;">Descubre nuestros destinos y comienza tu próxima aventura.</p>
+      <a href="/" class="btn btn-primary" style="background: #B2D235; border-color: #B2D235; color: #fff; padding: 12px 30px; font-weight: 700; border-radius: 8px;">Explorar Rutas</a>
+    </div>
+  <% } else { %>
+    <div style="display: grid; gap: 20px;">
+      <% reservas.forEach(function(reserva) { %>
+        <div style="background: #fff; border-radius: 16px; padding: 24px; box-shadow: 0 4px 20px rgba(0,0,0,0.03); display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; border-left: 6px solid #B2D235;">
+          
+          <div style="flex: 1; min-width: 250px;">
+            <div style="font-size: 0.85rem; color: var(--mist); font-weight: 600; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px;">
+              Boleto: <span style="color: var(--navy);"><%= reserva.codigo_boleto %></span>
+            </div>
+            <h3 style="font-size: 1.5rem; color: var(--navy); font-weight: 800; margin-bottom: 8px;">
+              <%= reserva.origen %> → <%= reserva.destino %>
+            </h3>
+            <p style="font-size: 1rem; color: var(--mist);">
+              <strong>Fecha:</strong> <%= new Date(reserva.fecha_viaje).toLocaleDateString('es-ES') %> <br>
+              <strong>Pasajero:</strong> <%= reserva.cliente_nombre %> (<%= reserva.cliente_documento %>)
+            </p>
+          </div>
+          
+          <div style="text-align: right; min-width: 150px;">
+            <div style="background: #F4F6F8; padding: 12px 16px; border-radius: 8px; display: inline-block; text-align: left;">
+              <p style="font-size: 0.85rem; color: var(--mist); margin-bottom: 4px; font-weight: 600;">HORARIO Y SERVICIO</p>
+              <p style="color: var(--navy); font-weight: 700; margin-bottom: 4px;"><%= reserva.hora_salida %> - <%= reserva.hora_llegada %></p>
+              <p style="font-size: 0.9rem; color: #B2D235; font-weight: 800; text-transform: uppercase;"><%= reserva.servicio %></p>
+            </div>
+          </div>
+          
+        </div>
+      <% }); %>
+    </div>
+  <% } %>
+
+</main>
+
+<%- include('partials/footer') %>
+<%- include('partials/bot') %>
+<%- include('partials/scripts') %>
+</body>
+</html>

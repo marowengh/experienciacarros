@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="es">
+<%- include('partials/head') %>
+<body>
+<%- include('partials/header') %>
+<%- include('partials/hero') %>
+<%- include('partials/buscador') %>
+<%- include('partials/rutas_exclusivas') %>
+<%- include('partials/destinos', { destinos: (typeof destinos !== 'undefined' ? destinos : []) }) %>
+<%- include('partials/promociones') %>
+<%- include('partials/servicios') %>
+<%- include('partials/por_que_elegirnos') %>
+<%- include('partials/contacto') %>
+<%- include('partials/footer') %>
+<%- include('partials/bot') %>
+<%- include('partials/scripts') %>
+</body>
+</html>

@@ -1,0 +1,106 @@
+<!-- ================= SERVICIOS ================= -->
+<section class="swap-cream" id="servicios">
+  <div class="container">
+    <div class="section-head">
+      <div class="eyebrow" style="color:var(--navy);">Ecosistema Integral</div>
+      <h2>Lo que movemos por ti</h2>
+      <p>Cuatro soluciones inteligentes para viajar, enviar y conectar, operadas por el mismo equipo en el que cientos de pasajeros en Ayacucho confían cada día.</p>
+    </div>
+
+    <div class="services-grid">
+      <!-- 1. Taxi en línea -->
+      <div class="service-card featured">
+        <span class="num">SERVICIO 01</span>
+        <div class="icon-box">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.4 2.9A3.7 3.7 0 0 0 2 12v4c0 .6.4 1 1 1h2"/>
+            <circle cx="7" cy="17" r="2"/>
+            <path d="M9 17h6"/>
+            <circle cx="17" cy="17" r="2"/>
+          </svg>
+        </div>
+        <h3>Taxi en línea</h3>
+        <p>Solicita tu movilidad de forma rápida, segura y confiable, a cualquier hora del día. Tu conductor ideal a un clic de distancia.</p>
+        <span class="tag">Solicitar taxi →</span>
+      </div>
+
+      <!-- 2. Transporte de pasajeros -->
+      <div class="service-card">
+        <span class="num">SERVICIO 02</span>
+        <div class="icon-box">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 12h13l3 4H3z"/><path d="M16 8l3 4"/><path d="M3 8h11v4H3z"/><circle cx="7" cy="19" r="1.6" fill="#fff" stroke="none"/><circle cx="16" cy="19" r="1.6" fill="#fff" stroke="none"/>
+          </svg>
+        </div>
+        <h3>Transporte de pasajeros</h3>
+        <p>Viajes cómodos y seguros a diferentes destinos de la región, con unidades modernas y estrictamente cuidadas para tu confort.</p>
+        <span class="tag">Ver rutas →</span>
+      </div>
+
+      <!-- 3. Envíos de encomiendas -->
+      <div class="service-card" style="user-select: none;">
+        <span class="num">SERVICIO 03</span>
+        <div class="icon-box">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="7" width="14" height="11" rx="1.5"/><path d="M17 10h3l2 3v5h-5z"/><circle cx="7.5" cy="18.5" r="1.6"/><circle cx="17.5" cy="18.5" r="1.6"/>
+          </svg>
+        </div>
+        <h3>Envíos de encomiendas</h3>
+        <p>Tus paquetes, documentos y carga llegan a su destino con extrema puntualidad y el mayor de los cuidados en cada entrega.</p>
+        <span class="tag">Rastrear envío →</span>
+      </div>
+      
+      <!-- 4. Venta de pasajes -->
+      <div class="service-card" style="user-select: none;">
+        <span class="num">SERVICIO 04</span>
+        <div class="icon-box">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/>
+          </svg>
+        </div>
+        <h3>Venta de pasajes</h3>
+        <p>Pasajes directos de Huamanga a Lima y otros destinos principales, con horarios perfectamente pensados para tu itinerario.</p>
+        <span class="tag">Comprar pasaje →</span>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<script>
+(function(){
+  const slider = document.querySelector('.services-grid');
+  let isDown = false;
+  let startX;
+  let scrollLeft;
+
+  slider.addEventListener('mousedown', (e) => {
+    isDown = true;
+    slider.style.cursor = 'grabbing';
+    startX = e.pageX - slider.offsetLeft;
+    scrollLeft = slider.scrollLeft;
+    // Disable scroll snapping during drag
+    slider.style.scrollSnapType = 'none';
+  });
+  
+  slider.addEventListener('mouseleave', () => {
+    isDown = false;
+    slider.style.cursor = 'grab';
+    slider.style.scrollSnapType = 'x mandatory';
+  });
+  
+  slider.addEventListener('mouseup', () => {
+    isDown = false;
+    slider.style.cursor = 'grab';
+    slider.style.scrollSnapType = 'x mandatory';
+  });
+  
+  slider.addEventListener('mousemove', (e) => {
+    if(!isDown) return;
+    e.preventDefault();
+    const x = e.pageX - slider.offsetLeft;
+    const walk = (x - startX) * 2; // Scroll-fast multiplier
+    slider.scrollLeft = scrollLeft - walk;
+  });
+})();
+</script>

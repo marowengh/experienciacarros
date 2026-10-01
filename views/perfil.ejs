@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="es">
+<%- include('partials/head') %>
+<body style="background: var(--cream);">
+
+<%- include('partials/header') %>
+
+<main style="padding: 40px 20px; max-width: 600px; margin: 0 auto;">
+  <div style="background: #fff; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border: 1px solid var(--line);">
+    <h2 style="color: var(--navy); margin-bottom: 20px;">Mi Perfil</h2>
+    
+    <% if (!locals.usuario.telefono) { %>
+      <div style="background: #fef2f2; color: #b91c1c; padding: 15px; border-radius: 8px; margin-bottom: 25px; border: 1px solid #fecaca;">
+        <strong>¡Atención!</strong> Completa los datos faltantes para finalizar la configuración de tu cuenta.
+      </div>
+    <% } %>
+
+    <form id="perfil-form">
+      <div style="display: flex; gap: 15px; margin-bottom: 15px;">
+        <div style="flex: 1;">
+          <label style="display: block; margin-bottom: 5px; font-weight: 600; color: var(--navy);">Nombres</label>
+          <input type="text" id="perfil-nombre" value="<%= locals.usuario.nombre %>" required style="width: 100%; padding: 12px; border: 1px solid var(--line); border-radius: 8px;">
+        </div>
+        <div style="flex: 1;">
+          <label style="display: block; margin-bottom: 5px; font-weight: 600; color: var(--navy);">Apellidos</label>
+          <input type="text" id="perfil-apellidos" value="<%= locals.usuario.apellidos %>" required style="width: 100%; padding: 12px; border: 1px solid var(--line); border-radius: 8px;">
+        </div>
+      </div>
+
+      <div style="margin-bottom: 15px;">
+        <label style="display: block; margin-bottom: 5px; font-weight: 600; color: var(--navy);">Correo Electrónico</label>
+        <input type="email" value="<%= locals.usuario.email %>" readonly style="width: 100%; padding: 12px; border: 1px solid var(--line); border-radius: 8px; background: #f8fafc; color: #64748b;">
+      </div>
+
+      <div style="margin-bottom: 15px;">
+        <label style="display: block; margin-bottom: 5px; font-weight: 600; color: var(--navy);">Teléfono</label>
+        <input type="tel" id="perfil-telefono" value="<%= locals.usuario.telefono || '' %>" placeholder="987654321" required style="width: 100%; padding: 12px; border: 1px solid var(--line); border-radius: 8px;">
+      </div>
+
+      <div style="margin-bottom: 25px;">
+        <label style="display: block; margin-bottom: 5px; font-weight: 600; color: var(--navy);">Contraseña</label>
+        <% if (locals.usuario.needsPassword) { %>
+          <input type="password" id="perfil-password" value="********" disabled style="width: 100%; padding: 12px; border: 1px solid var(--line); border-radius: 8px; background: #f8fafc; color: #64748b; text-decoration: line-through;">
+          <small style="color: #64748b; margin-top: 5px; display: block;">Autenticado con Google (Contraseña gestionada por Google).</small>
+        <% } else { %>
+          <input type="password" id="perfil-password" placeholder="Dejar en blanco para mantener la actual" minlength="6" style="width: 100%; padding: 12px; border: 1px solid var(--line); border-radius: 8px;">
+        <% } %>
+      </div>
+
+      <button type="submit" class="btn btn-primary" style="width: 100%; padding: 14px; background: #B2D235; color: var(--navy); border: none; border-radius: 8px; font-weight: 700; cursor: pointer;">
+        Guardar Cambios
+      </button>
+    </form>
+  </div>
+</main>
+
+<script>
+document.getElementById('perfil-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const nombre = document.getElementById('perfil-nombre').value;
+    const apellidos = document.getElementById('perfil-apellidos').value;
+    const telefono = document.getElementById('perfil-telefono').value;
+    const passwordInput = document.getElementById('perfil-password');
+    const password = passwordInput.disabled ? '' : passwordInput.value;
+
+    try {
+        const res = await fetch('/api/perfil', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ nombre, apellidos, telefono, password })
+        });
+        
+        const data = await res.json();
+        if (res.ok) {
+            alert('Perfil actualizado con éxito');
+            window.location.reload();
+        } else {
+            alert(data.error || 'Error al actualizar');
+        }
+    } catch (err) {
+        alert('Error de conexión');
+    }
+});
+</script>
+</body>
+</html>

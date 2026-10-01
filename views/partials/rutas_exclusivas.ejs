@@ -1,0 +1,257 @@
+<!-- ================= RUTAS ESTRATÉGICAS ================= -->
+<section id="rutas-exclusivas" style="padding: 100px 0; background: #020617; position: relative; overflow: hidden;">
+  <!-- Decoración de fondo ultra-futurista -->
+  <div style="position: absolute; top: -150px; right: -150px; width: 600px; height: 600px; background: radial-gradient(circle, rgba(178,210,53,0.15) 0%, rgba(178,210,53,0) 60%); filter: blur(40px); border-radius: 50%; pointer-events: none; animation: pulseGlow 6s infinite alternate;"></div>
+  <div style="position: absolute; bottom: -200px; left: -200px; width: 700px; height: 700px; background: radial-gradient(circle, rgba(30,58,138,0.3) 0%, rgba(0,0,0,0) 60%); filter: blur(50px); border-radius: 50%; pointer-events: none; animation: pulseGlow 8s infinite alternate-reverse;"></div>
+
+  <!-- Grid overlay cibernético -->
+  <div style="position: absolute; inset: 0; background-image: linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px); background-size: 40px 40px; pointer-events: none; opacity: 0.5;"></div>
+
+  <div class="container" style="position: relative; z-index: 2;">
+    <div class="section-head" style="text-align: center; margin-bottom: 60px;">
+      <div style="display: inline-flex; align-items: center; gap: 8px; padding: 6px 16px; background: rgba(178, 210, 53, 0.05); border: 1px solid rgba(178, 210, 53, 0.2); color: #B2D235; border-radius: 30px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; font-size: 0.75rem; margin-bottom: 20px; box-shadow: 0 0 15px rgba(178,210,53,0.1);">
+        <div style="width: 6px; height: 6px; background: #B2D235; border-radius: 50%; box-shadow: 0 0 8px #B2D235; animation: blink 1.5s infinite;"></div>
+        RED ACTIVA
+      </div>
+      <h2 style="font-size: 3rem; font-weight: 900; color: #ffffff; margin-bottom: 15px; text-shadow: 0 0 20px rgba(255,255,255,0.1); letter-spacing: -1px;">Rutas <span style="color: #B2D235;">Estratégicas</span></h2>
+      <p style="color: #94a3b8; font-size: 1.15rem; max-width: 600px; margin: 0 auto;">Nuestros corredores viales más solicitados. Tecnología, velocidad y confort absoluto en cada kilómetro.</p>
+    </div>
+
+    <style>
+      @keyframes pulseGlow {
+        0% { transform: scale(1); opacity: 0.8; }
+        100% { transform: scale(1.1); opacity: 1; }
+      }
+      @keyframes blink {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.4; }
+      }
+      @keyframes float {
+        0% { transform: translateY(0px); }
+        50% { transform: translateY(-15px); }
+        100% { transform: translateY(0px); }
+      }
+      .rutas-layout {
+        display: grid;
+        grid-template-columns: 1fr 1.2fr;
+        gap: 60px;
+        align-items: center;
+      }
+      .rutas-imagen {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        animation: float 6s ease-in-out infinite;
+      }
+      .rutas-imagen::before {
+        content: '';
+        position: absolute;
+        width: 120%;
+        height: 40px;
+        bottom: -20px;
+        background: radial-gradient(ellipse at center, rgba(178,210,53,0.2) 0%, transparent 70%);
+        border-radius: 50%;
+        filter: blur(10px);
+      }
+      .rutas-imagen img {
+        width: 100%;
+        max-height: 550px;
+        object-fit: contain;
+        filter: drop-shadow(0 30px 40px rgba(0,0,0,0.8));
+        z-index: 2;
+      }
+      .rutas-cards {
+        display: flex;
+        flex-direction: column;
+        gap: 35px;
+      }
+      .rutas-card {
+        background: rgba(15, 23, 42, 0.6);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        border-radius: 24px;
+        padding: 35px;
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        box-shadow: 0 20px 40px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.1);
+        position: relative;
+        overflow: hidden;
+      }
+      .rutas-card::before {
+        content: '';
+        position: absolute;
+        top: 0; left: 0; width: 4px; height: 100%;
+        background: #B2D235;
+        box-shadow: 0 0 15px #B2D235;
+        opacity: 0;
+        transition: opacity 0.4s;
+      }
+      .rutas-card:hover {
+        transform: translateX(-10px) translateY(-5px);
+        border-color: rgba(178,210,53,0.3);
+        box-shadow: 0 30px 60px rgba(0,0,0,0.6), 0 0 40px rgba(178,210,53,0.15);
+      }
+      .rutas-card:hover::before {
+        opacity: 1;
+      }
+      .tech-data {
+        background: rgba(0,0,0,0.3);
+        border-radius: 12px;
+        padding: 12px 16px;
+        border: 1px solid rgba(255,255,255,0.03);
+        position: relative;
+        overflow: hidden;
+      }
+      .tech-data::after {
+        content: '';
+        position: absolute;
+        top: 0; left: -100%; width: 50%; height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.05), transparent);
+        transition: 0.5s;
+      }
+      .rutas-card:hover .tech-data::after {
+        left: 100%;
+      }
+      .btn-reservar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        width: 100%;
+        background: rgba(255,255,255,0.03);
+        color: #fff;
+        font-weight: 700;
+        padding: 16px 24px;
+        border-radius: 16px;
+        text-decoration: none;
+        border: 1px solid rgba(255,255,255,0.1);
+        transition: all 0.3s ease;
+      }
+      .btn-reservar:hover {
+        background: #B2D235;
+        color: #0f172a;
+        border-color: #B2D235;
+        box-shadow: 0 0 20px rgba(178,210,53,0.4);
+      }
+      
+      @media (max-width: 992px) {
+        .rutas-layout {
+          grid-template-columns: 1fr;
+        }
+        .rutas-imagen {
+          height: auto;
+          margin-bottom: 20px;
+        }
+        .rutas-imagen img {
+          max-height: 400px;
+        }
+      }
+    </style>
+
+    <div class="rutas-layout">
+      <!-- Izquierda: Imagen holográfica -->
+      <div class="rutas-imagen">
+        <img src="/imagenes/recorte-1789679904904.png" alt="Corredor Estratégico Vision 21">
+      </div>
+
+      <!-- Derecha: Las dos tarjetas innovadoras -->
+      <div class="rutas-cards">
+        
+        <!-- Ruta Exclusiva: Huanta -->
+        <div class="rutas-card">
+          <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 25px;">
+            <div>
+              <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 12px;">
+                <div style="width: 32px; height: 32px; border-radius: 8px; background: rgba(178, 210, 53, 0.1); display: flex; align-items: center; justify-content: center; border: 1px solid rgba(178,210,53,0.3);">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#B2D235" stroke-width="2"><path d="M3 12h13l3 4H3z"/><path d="M16 8l3 4"/><circle cx="7" cy="18" r="1.6"/><circle cx="16" cy="18" r="1.6"/><path d="M3 8h11v4H3z"/></svg>
+                </div>
+                <span style="color: #94a3b8; font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 2px;">Expreso Local</span>
+              </div>
+              <h3 style="font-size: 2rem; font-weight: 900; color: #ffffff; margin: 0; display: flex; align-items: center; gap: 12px; letter-spacing: -0.5px;">
+                Ayacucho 
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="rgba(178,210,53,0.8)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                Huanta
+              </h3>
+            </div>
+            <div style="background: rgba(178,210,53,0.1); border: 1px solid rgba(178,210,53,0.3); color: #B2D235; font-weight: 900; padding: 10px 18px; border-radius: 12px; font-size: 1.2rem; display: flex; flex-direction: column; align-items: center; line-height: 1;">
+              <span style="font-size: 0.65rem; text-transform: uppercase; letter-spacing: 1px; color: #94a3b8; margin-bottom: 4px;">Tarifa</span>
+              S/ 8.00
+            </div>
+          </div>
+          
+          <p style="color: #94a3b8; font-size: 1rem; margin-bottom: 25px; line-height: 1.6;">Enlace de alta velocidad con la esmeralda de los Andes. Frecuencia continua diseñada para maximizar tu tiempo.</p>
+          
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 30px;">
+            <div class="tech-data">
+              <div style="display: flex; align-items: center; gap: 8px; color: #64748b; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1.5px; font-weight: 700; margin-bottom: 6px;">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#B2D235" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                Tiempo Est.
+              </div>
+              <div style="color: #f8fafc; font-weight: 700; font-size: 1.1rem; letter-spacing: 0.5px;">1h 15m</div>
+            </div>
+            <div class="tech-data">
+              <div style="display: flex; align-items: center; gap: 8px; color: #64748b; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1.5px; font-weight: 700; margin-bottom: 6px;">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#B2D235" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                Frecuencia
+              </div>
+              <div style="color: #f8fafc; font-weight: 700; font-size: 1.1rem; letter-spacing: 0.5px;">Cada Hora</div>
+            </div>
+          </div>
+          
+          <a href="/reservar?origen=Ayacucho&destino=Huanta" class="btn-reservar">
+            <span>Iniciar Secuencia de Reserva</span>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+          </a>
+        </div>
+
+        <!-- Ruta Exclusiva: VRAEM -->
+        <div class="rutas-card">
+          <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 25px;">
+            <div>
+              <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 12px;">
+                <div style="width: 32px; height: 32px; border-radius: 8px; background: rgba(178, 210, 53, 0.1); display: flex; align-items: center; justify-content: center; border: 1px solid rgba(178,210,53,0.3);">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#B2D235" stroke-width="2"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 9.36l-7.1 7.1a1 1 0 0 1-1.42 0l-1.4-1.4a1 1 0 0 1 0-1.42l7.1-7.1a6 6 0 0 1 9.36-7.94l-3.77 3.77a1 1 0 0 0 0 1.4z"/></svg>
+                </div>
+                <span style="color: #94a3b8; font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 2px;">Expreso Interregional</span>
+              </div>
+              <h3 style="font-size: 2rem; font-weight: 900; color: #ffffff; margin: 0; display: flex; align-items: center; gap: 12px; letter-spacing: -0.5px;">
+                Ayacucho 
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="rgba(178,210,53,0.8)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                VRAEM
+              </h3>
+            </div>
+            <div style="background: rgba(178,210,53,0.1); border: 1px solid rgba(178,210,53,0.3); color: #B2D235; font-weight: 900; padding: 10px 18px; border-radius: 12px; font-size: 1.2rem; display: flex; flex-direction: column; align-items: center; line-height: 1;">
+              <span style="font-size: 0.65rem; text-transform: uppercase; letter-spacing: 1px; color: #94a3b8; margin-bottom: 4px;">Tarifa</span>
+              S/ 60.00
+            </div>
+          </div>
+          
+          <p style="color: #94a3b8; font-size: 1rem; margin-bottom: 25px; line-height: 1.6;">Ruta hacia el corazón tropical optimizada. Flota de última generación para confort absoluto en trayectos largos.</p>
+          
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 30px;">
+            <div class="tech-data">
+              <div style="display: flex; align-items: center; gap: 8px; color: #64748b; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1.5px; font-weight: 700; margin-bottom: 6px;">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#B2D235" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                Tiempo Est.
+              </div>
+              <div style="color: #f8fafc; font-weight: 700; font-size: 1.1rem; letter-spacing: 0.5px;">5h 00m</div>
+            </div>
+            <div class="tech-data">
+              <div style="display: flex; align-items: center; gap: 8px; color: #64748b; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1.5px; font-weight: 700; margin-bottom: 6px;">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#B2D235" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                Unidades
+              </div>
+              <div style="color: #f8fafc; font-weight: 700; font-size: 1.1rem; letter-spacing: 0.5px;">Sprinter Vip</div>
+            </div>
+          </div>
+          
+          <a href="/reservar?origen=Ayacucho&destino=VRAE" class="btn-reservar">
+            <span>Iniciar Secuencia de Reserva</span>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+          </a>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>

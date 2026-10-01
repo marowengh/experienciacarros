@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Acceso - VISION 21</title>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+  <style>
+    :root {
+      --primary: #0f172a;
+      --secondary: #334155;
+      --accent: #f97316;
+      --accent-hover: #ea580c;
+      --bg: #f8fafc;
+      --surface: rgba(255, 255, 255, 0.85);
+      --border: rgba(255, 255, 255, 0.3);
+      --text: #1e293b;
+      --text-light: #64748b;
+      --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.07);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+
+    body {
+      background: url('https://images.unsplash.com/photo-1549144493-9c8612ea4a95?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80') center/cover no-repeat fixed;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .auth-container {
+      background: var(--surface);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      box-shadow: var(--glass-shadow);
+      width: 100%;
+      max-width: 480px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .auth-header {
+      text-align: center;
+      padding: 40px 30px 20px;
+    }
+
+    .logo {
+      font-weight: 800;
+      font-size: 28px;
+      color: var(--primary);
+      text-decoration: none;
+      display: inline-block;
+      margin-bottom: 8px;
+    }
+
+    .logo span {
+      color: var(--accent);
+    }
+
+    .subtitle {
+      color: var(--text-light);
+      font-size: 15px;
+    }
+
+    .auth-tabs {
+      display: flex;
+      border-bottom: 1px solid rgba(0,0,0,0.05);
+      margin-bottom: 30px;
+    }
+
+    .tab {
+      flex: 1;
+      text-align: center;
+      padding: 15px;
+      font-weight: 600;
+      color: var(--text-light);
+      cursor: pointer;
+      position: relative;
+      transition: color 0.3s ease;
+    }
+
+    .tab.active {
+      color: var(--accent);
+    }
+
+    .tab::after {
+      content: '';
+      position: absolute;
+      bottom: -1px;
+      left: 0;
+      width: 100%;
+      height: 3px;
+      background: var(--accent);
+      transform: scaleX(0);
+      transition: transform 0.3s ease;
+    }
+
+    .tab.active::after {
+      transform: scaleX(1);
+    }
+
+    .form-container {
+      padding: 0 40px 40px;
+    }
+
+    .auth-form {
+      display: none;
+      animation: fadeIn 0.4s ease-out forwards;
+    }
+
+    .auth-form.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--secondary);
+      margin-bottom: 8px;
+    }
+
+    .form-control {
+      width: 100%;
+      padding: 14px 16px;
+      background: rgba(255,255,255,0.7);
+      border: 1px solid rgba(0,0,0,0.1);
+      border-radius: 12px;
+      font-size: 15px;
+      color: var(--text);
+      transition: all 0.3s ease;
+      outline: none;
+    }
+
+    .form-control:focus {
+      background: #fff;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 4px rgba(249, 115, 22, 0.1);
+    }
+
+    .btn-submit {
+      width: 100%;
+      padding: 16px;
+      background: var(--accent);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin-top: 10px;
+    }
+
+    .btn-submit:hover {
+      background: var(--accent-hover);
+      transform: translateY(-2px);
+      box-shadow: 0 10px 20px rgba(249, 115, 22, 0.2);
+    }
+
+    .back-home {
+      display: block;
+      text-align: center;
+      margin-top: 25px;
+      color: var(--text-light);
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 500;
+      transition: color 0.3s;
+    }
+
+    .back-home:hover {
+      color: var(--accent);
+    }
+
+    .row {
+      display: flex;
+      gap: 15px;
+    }
+    .row .form-group {
+      flex: 1;
+    }
+
+    .error-msg {
+      background: #fee2e2;
+      color: #b91c1c;
+      padding: 12px;
+      border-radius: 8px;
+      font-size: 14px;
+      margin-bottom: 20px;
+      display: none;
+      text-align: center;
+    }
+
+    .divider {
+      display: flex;
+      align-items: center;
+      text-align: center;
+      margin: 25px 0 15px;
+    }
+    .divider::before, .divider::after {
+      content: '';
+      flex: 1;
+      border-bottom: 1px solid rgba(0,0,0,0.1);
+    }
+    .divider span {
+      padding: 0 10px;
+      color: var(--text-light);
+      font-size: 13px;
+      font-weight: 500;
+    }
+
+    .btn-google {
+      width: 100%;
+      padding: 14px;
+      background: white;
+      color: var(--text);
+      border: 1px solid rgba(0,0,0,0.1);
+      border-radius: 12px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+    .btn-google:hover {
+      background: #f8fafc;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+      border-color: rgba(0,0,0,0.2);
+    }
+    .btn-google img {
+      width: 20px;
+      height: 20px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="auth-container">
+    <div class="auth-header">
+      <a href="/" class="logo">VISION<span>21</span></a>
+      <p class="subtitle">Bienvenido a la movilidad de nueva generación</p>
+    </div>
+
+    <div class="auth-tabs">
+      <div class="tab active" onclick="switchTab('login')">Iniciar Sesión</div>
+      <div class="tab" onclick="switchTab('register')">Crear Cuenta</div>
+    </div>
+
+    <div class="form-container">
+      
+      <div id="error-alert" class="error-msg"></div>
+
+      <form id="form-login" class="auth-form active" onsubmit="handleLogin(event)">
+        <div class="form-group">
+          <label for="login-email">Correo Electrónico</label>
+          <input type="email" id="login-email" class="form-control" placeholder="ejemplo@correo.com" required>
+        </div>
+        <div class="form-group">
+          <label for="login-password">Contraseña</label>
+          <input type="password" id="login-password" class="form-control" placeholder="••••••••" required>
+        </div>
+        <button type="submit" class="btn-submit">Ingresar</button>
+      </form>
+
+      <form id="form-register" class="auth-form" onsubmit="handleRegister(event)">
+        <div class="row">
+          <div class="form-group">
+            <label for="reg-nombre">Nombres</label>
+            <input type="text" id="reg-nombre" class="form-control" placeholder="Juan" minlength="2" maxlength="50" pattern="[a-zA-ZáéíóúÁÉÍÓÚñÑ\\s]+" title="Solo letras y espacios" required oninput="this.value = this.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ\\s]/g, '')">
+          </div>
+          <div class="form-group">
+            <label for="reg-apellido">Apellidos</label>
+            <input type="text" id="reg-apellido" class="form-control" placeholder="Pérez" minlength="2" maxlength="50" pattern="[a-zA-ZáéíóúÁÉÍÓÚñÑ\\s]+" title="Solo letras y espacios" required oninput="this.value = this.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ\\s]/g, '')">
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <label for="reg-email">Correo Electrónico</label>
+          <input type="email" id="reg-email" class="form-control" placeholder="ejemplo@correo.com" required>
+        </div>
+        
+        <div class="form-group">
+          <label for="reg-telefono">Teléfono (Opcional)</label>
+          <input type="tel" id="reg-telefono" class="form-control" placeholder="987654321" pattern="[0-9]{9,15}" minlength="9" maxlength="15" title="Solo números (mínimo 9 dígitos)" required oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+        </div>
+
+        <div class="form-group">
+          <label for="reg-password">Contraseña</label>
+          <input type="password" id="reg-password" class="form-control" placeholder="Mínimo 6 caracteres" minlength="6" required>
+        </div>
+        <button type="submit" class="btn-submit">Registrarme</button>
+      </form>
+
+      <div class="divider">
+        <span>o continuar con</span>
+      </div>
+
+      <div style="display: flex; flex-direction: column; align-items: center; gap: 15px;">
+        <p style="font-size: 13px; color: #64748b; text-align: center;">
+          ⚠️ <b>Aviso:</b> No puedes usar tu contraseña de Google en el formulario de arriba. Por seguridad, debes hacer clic en el botón oficial de abajo.
+        </p>
+        <div id="buttonDiv"></div>
+      </div>
+
+      <a href="/" class="back-home">← Volver al inicio</a>
+    </div>
+  </div>
+
+  <script>
+    window.onload = function () {
+      if (typeof google !== 'undefined') {
+        google.accounts.id.initialize({
+          client_id: "976356891802-2hqn6dug38qsvogi4ebsr6dqfbimj8tk.apps.googleusercontent.com",
+          callback: handleGoogleLogin
+        });
+        google.accounts.id.renderButton(
+          document.getElementById("buttonDiv"),
+          { theme: "outline", size: "large", type: "standard", text: "signin_with", width: 250 }
+        );
+      } else {
+        document.getElementById("buttonDiv").innerHTML = "<p style='color:red;font-size:12px;'>Error cargando Google API. Desactiva tu adblocker o verifica tu conexión.</p>";
+      }
+    };
+    function switchTab(tab) {
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.auth-form').forEach(f => f.classList.remove('active'));
+      document.getElementById('error-alert').style.display = 'none';
+
+      if(tab === 'login') {
+        document.querySelectorAll('.tab')[0].classList.add('active');
+        document.getElementById('form-login').classList.add('active');
+      } else {
+        document.querySelectorAll('.tab')[1].classList.add('active');
+        document.getElementById('form-register').classList.add('active');
+      }
+    }
+
+    function showError(msg) {
+      const alert = document.getElementById('error-alert');
+      alert.textContent = msg;
+      alert.style.display = 'block';
+    }
+
+    async function handleGoogleLogin(response) {
+      try {
+        const res = await fetch('/api/google-login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ credential: response.credential })
+        });
+        const data = await res.json();
+        
+        if (res.ok) {
+          window.location.href = '/';
+        } else {
+          showError(data.error || 'Error al iniciar sesión con Google');
+        }
+      } catch (err) {
+        showError('Error de conexión');
+      }
+    }
+
+    async function handleLogin(e) {
+      e.preventDefault();
+      const email = document.getElementById('login-email').value;
+      const password = document.getElementById('login-password').value;
+      
+      try {
+        const res = await fetch('/api/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password })
+        });
+        const data = await res.json();
+        
+        if(res.ok) {
+          if (email === 'gerente@vision21.com' || email === 'admin@vision21.com' || email === 'marowengonzaleshl@gmail.com') {
+            window.location.href = '/admin';
+          } else {
+            window.location.href = '/';
+          }
+        } else {
+          showError(data.error || 'Error al iniciar sesión');
+        }
+      } catch(err) {
+        showError('Error de conexión');
+      }
+    }
+
+    async function handleRegister(e) {
+      e.preventDefault();
+      const nombre = document.getElementById('reg-nombre').value;
+      const apellidos = document.getElementById('reg-apellido').value;
+      const email = document.getElementById('reg-email').value;
+      const telefono = document.getElementById('reg-telefono').value;
+      const password = document.getElementById('reg-password').value;
+
+      try {
+        const res = await fetch('/api/registro', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ nombre, apellidos, email, telefono, password })
+        });
+        const data = await res.json();
+        
+        if(res.ok) {
+          alert('¡Cuenta creada exitosamente! Ahora puedes iniciar sesión.');
+          switchTab('login');
+        } else {
+          showError(data.error || 'Error al registrar usuario');
+        }
+      } catch(err) {
+        showError('Error de conexión');
+      }
+    }
+  </script>
+</body>
+</html>

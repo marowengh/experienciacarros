@@ -1,0 +1,58 @@
+<!-- ================= BUSCADOR ================= -->
+<div class="container search-wrap" id="pasaje">
+  <div class="search-card futuristic">
+    <div class="sc-image" style="background-image: url('/imagenes/premium_traveler.jpg');">
+      <div class="sc-image-overlay">
+        <h3>De Ayacucho hacia otros lugares</h3>
+        <p>Viaja con la mayor comodidad, puntualidad y tecnología.</p>
+      </div>
+    </div>
+    <div class="sc-content">
+      <div class="sc-title">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+        Busca tu próximo viaje
+      </div>
+      <form action="/reservar" method="GET" class="search-grid">
+        <div class="field">
+          <label for="origen">Origen</label>
+          <div class="input-row">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s7-6.6 7-12a7 7 0 1 0-14 0c0 5.4 7 12 7 12z"/><circle cx="12" cy="9" r="2.6"/></svg>
+            <select name="origen" id="origen">
+              <option value="Ayacucho">Ayacucho — Terminal Terrestre</option>
+            </select>
+          </div>
+        </div>
+        <div class="field">
+          <label for="destino">Destino</label>
+          <div class="input-row">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s7-6.6 7-12a7 7 0 1 0-14 0c0 5.4 7 12 7 12z"/><circle cx="12" cy="9" r="2.6"/></svg>
+            <select name="destino" id="destino">
+              <option value="Lima">Lima</option>
+              <option value="Huanta">Huanta</option>
+              <option value="Abancay">Abancay</option>
+              <option value="Cusco">Cusco</option>
+              <option value="Ica">Ica</option>
+              <option value="Arequipa">Arequipa</option>
+              <option value="San Miguel">San Miguel</option>
+              <option value="La Mar">La Mar</option>
+              <option value="VRAE">VRAE</option>
+              <option value="Cangallo">Cangallo</option>
+              <option value="Vinchos">Vinchos</option>
+            </select>
+          </div>
+        </div>
+        <div class="field">
+          <label for="fecha">Fecha de viaje</label>
+          <div class="input-row">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+            <input type="date" name="fecha" id="fecha" required>
+          </div>
+        </div>
+        <button type="submit" class="btn btn-primary">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+          Buscar
+        </button>
+      </form>
+    </div>
+  </div>
+</div>

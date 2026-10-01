@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="es">
+<%- include('partials/head') %>
+<body style="background: var(--cream);">
+
+<!-- HEADER MINIMALISTA -->
+<header style="background: #fff; padding: 15px 0; border-bottom: 1px solid var(--line); box-shadow: 0 4px 20px rgba(0,0,0,0.03);">
+  <div class="container" style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+    
+    <!-- LADO IZQUIERDO: Logo -->
+    <a href="/" style="font-family: var(--font-display); font-weight: 800; font-size: 24px; color: var(--navy); text-decoration: none;">
+      VISION<span style="color:#B2D235;">21</span>
+    </a>
+
+    <!-- LADO DERECHO: Avatar, Mis Reservas, Volver -->
+    <div style="display: flex; align-items: center; justify-content: flex-end; gap: 20px;">
+      <a href="/mis-reservas" class="btn" style="padding: 10px 16px; background: #FF1A1A; color: #fff; font-weight: 800; border-radius: 8px; border: none; box-shadow: 0 4px 10px rgba(255,26,26,0.3); text-transform: uppercase; font-size: 0.8rem; letter-spacing: 0.5px; text-decoration: none;">
+        Mis Reservas
+      </a>
+      <a href="/" style="color: var(--mist); text-decoration: none; font-size: 14px; font-weight: 600;">← Volver al inicio</a>
+      <% if (locals.usuario) { %>
+        <div style="display: flex; align-items: center; gap: 12px; padding-left: 15px; border-left: 2px solid #e2e8f0;">
+          <div style="width: 40px; height: 40px; border-radius: 50%; background: #f8fafc; color: #0f172a; border: 2px solid #B2D235; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 18px; box-shadow: 0 2px 8px rgba(178, 210, 53, 0.3);">
+            <%= locals.usuario.nombre.charAt(0).toUpperCase() %>
+          </div>
+          <span style="font-size: 15px; font-weight: 700; color: #1e293b;"><%= locals.usuario.nombre %></span>
+        </div>
+      <% } %>
+    </div>
+
+  </div>
+</header>
+
+<main style="width: 100%; padding: 40px 20px; box-sizing: border-box;">
+  
+  <!-- PROGRESS BAR -->
+  <div class="wizard-progress">
+    <div class="step active" id="step1-indicator">
+      <div class="step-circle">1</div>
+      <span>Horario</span>
+    </div>
+    <div class="step-line"></div>
+    <div class="step" id="step2-indicator">
+      <div class="step-circle">2</div>
+      <span>Asientos</span>
+    </div>
+    <div class="step-line"></div>
+    <div class="step" id="step3-indicator">
+      <div class="step-circle">3</div>
+      <span>Pasajero y Pago</span>
+    </div>
+  </div>
+
+  <div class="wizard-container">
+    
+    <!-- PASO 1: SELECCIÓN DE HORARIO -->
+    <div id="step-1" class="wizard-step active">
+      <div class="step-header">
+        <h2>Selecciona tu horario</h2>
+        <p style="font-size: 1.15rem; background: #f4f9e3; color: var(--navy); padding: 12px 20px; border-radius: 8px; display: inline-block; margin-top: 10px; font-weight: 500; border: 1px solid #B2D235;">Ruta: <strong id="route-origen"><%= origen %></strong> a <strong id="route-destino"><%= destino %></strong> &nbsp;|&nbsp; Fecha: <strong id="route-fecha"><%= fecha %></strong></p>
+      </div>
+      
+      <div id="buses-list" class="buses-list">
+        <p style="text-align: center; color: var(--mist); padding: 40px;">Cargando horarios disponibles...</p>
+      </div>
+    </div>
+
+    <!-- PASO 2: PREFERENCIAS DE VIAJE -->
+    <div id="step-2" class="wizard-step">
+      <div class="step-header">
+        <h2>Preferencias de Viaje</h2>
+        <p>Indícanos cuántas personas viajan y dónde prefieren sentarse.</p>
+      </div>
+      
+      <div class="seat-selection-layout">
+        <!-- Opciones de Ubicación -->
+        <div class="bus-container" style="padding: 30px; text-align: left; background: #fff; border-radius: 12px; border: 1px solid #e2e8f0; box-shadow: 0 4px 15px rgba(0,0,0,0.03);">
+          
+          <div class="field-group" style="margin-bottom: 25px;">
+            <label style="font-weight: 700; color: var(--navy); display: block; margin-bottom: 10px; font-size: 1.1rem;">Cantidad de Pasajeros</label>
+            <select id="step2-qty" style="width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #cbd5e1; font-size: 1rem; color: var(--navy); font-weight: 600;">
+              <option value="1">1 Persona</option>
+              <option value="2">2 Personas</option>
+              <option value="3">3 Personas</option>
+              <option value="4">4 Personas</option>
+              <option value="5">5 Personas</option>
+            </select>
+          </div>
+
+          <div class="field-group">
+            <label style="font-weight: 700; color: var(--navy); display: block; margin-bottom: 10px; font-size: 1.1rem;">Ubicación Preferida</label>
+            <div style="display: flex; flex-direction: column; gap: 15px;">
+              <label class="loc-label" style="display: flex; align-items: center; gap: 12px; padding: 15px; border: 2px solid #B2D235; border-radius: 8px; cursor: pointer; transition: all 0.2s; background: #f4f9e3;">
+                <input type="radio" name="ubicacion" value="Adelante" checked style="transform: scale(1.2);">
+                <div>
+                  <strong style="display: block; color: var(--navy); font-size: 1.05rem;">Adelante (Copiloto)</strong>
+                  <span style="font-size: 0.85rem; color: var(--mist);">Asientos junto al chofer.</span>
+                </div>
+              </label>
+              
+              <label class="loc-label" style="display: flex; align-items: center; gap: 12px; padding: 15px; border: 1px solid #cbd5e1; border-radius: 8px; cursor: pointer; transition: all 0.2s;">
+                <input type="radio" name="ubicacion" value="Atrás">
+                <div>
+                  <strong style="display: block; color: var(--navy); font-size: 1.05rem;">Atrás (Cabina Principal)</strong>
+                  <span style="font-size: 0.85rem; color: var(--mist);">Ubicación en la parte posterior del bus.</span>
+                </div>
+              </label>
+            </div>
+          </div>
+
+        </div>
+        
+        <!-- Resumen Lateral -->
+        <div class="seat-summary">
+          <h3>Resumen</h3>
+          
+          <div class="selected-seats-info" style="margin-top: 15px; margin-bottom: 20px;">
+            <p style="margin-bottom: 5px; color: var(--mist);">Pasajeros:</p>
+            <div id="summary-qty" style="font-weight: 800; color: var(--navy); font-size: 1.2rem;">1 Persona</div>
+          </div>
+
+          <div class="selected-seats-info" style="margin-bottom: 25px;">
+            <p style="margin-bottom: 5px; color: var(--mist);">Ubicación:</p>
+            <div id="summary-loc" style="font-weight: 800; color: var(--navy); font-size: 1.2rem;">Adelante</div>
+          </div>
+          
+          <div class="total-price">
+            Total: <span>S/ <span id="total-amount">0.00</span></span>
+          </div>
+          
+          <button class="btn btn-primary" id="btn-next-step2" style="width: 100%; margin-top: 20px;">
+            Continuar
+          </button>
+          <button class="btn btn-ghost" id="btn-back-step2" style="width: 100%; margin-top: 10px;">
+            Volver a horarios
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- PASO 3: DATOS DEL PASAJERO Y PAGO -->
+    <div id="step-3" class="wizard-step">
+      <div class="step-header">
+        <h2>Detalles del Pasajero y Pago</h2>
+        <p>Completa la información para confirmar tu reserva.</p>
+      </div>
+      
+      <div class="checkout-layout">
+        <div class="passenger-form">
+          <div id="passenger-fields-container">
+            <!-- Formularios de pasajeros generados dinámicamente -->
+          </div>
+          
+          <h3 style="margin-top: 30px; margin-bottom: 15px;">Datos de Contacto</h3>
+          <div class="field-group">
+            <label>Correo Electrónico</label>
+            <input type="email" id="contact-email" value="<%= locals.usuario ? locals.usuario.email : '' %>" placeholder="ejemplo@correo.com" required>
+          </div>
+          <div class="field-group">
+            <label>Celular</label>
+            <input type="tel" id="contact-phone" value="<%= locals.usuario && locals.usuario.telefono ? locals.usuario.telefono : '' %>" placeholder="987654321" pattern="[0-9]{9,15}" minlength="9" maxlength="15" title="Ingrese un número de teléfono válido" required oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+          </div>
+        </div>
+        
+        <div class="checkout-summary">
+          <h3>Tu Viaje</h3>
+          <p><strong>Ruta:</strong> <%= origen %> - <%= destino %></p>
+          <p><strong>Fecha:</strong> <%= fecha %></p>
+          <p><strong>Hora:</strong> <span id="summary-time"></span></p>
+          <p><strong>Servicio:</strong> <span id="summary-service"></span></p>
+          <hr style="margin: 15px 0; border: none; border-top: 1px dashed var(--line);">
+          <div class="total-price">
+            A Pagar: <span>S/ <span id="final-amount">0.00</span></span>
+          </div>
+          <p style="font-size: 12px; color: var(--mist); margin-top: 10px;">* Simulación de pago. No se realizarán cargos reales.</p>
+          
+          <button class="btn btn-primary" id="btn-confirm-booking-whatsapp" style="width: 100%; margin-top: 20px; background-color: #25D366; border-color: #25D366;">
+            Confirmar y Enviar por WhatsApp
+          </button>
+          <button class="btn btn-secondary" id="btn-confirm-booking-db" style="width: 100%; margin-top: 10px; background-color: #0f172a; color: white; padding: 12px; border-radius: 8px; font-weight: 700; border: none; cursor: pointer;">
+            Solo Registrar Reserva
+          </button>
+          <button class="btn btn-ghost" id="btn-back-step3" style="width: 100%; margin-top: 10px;">
+            Volver a asientos
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- PASO 4: ÉXITO -->
+    <div id="step-4" class="wizard-step" style="text-align: center; padding: 60px 20px;">
+      <div style="width: 80px; height: 80px; background: #E8F5E9; color: #2E7D32; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px;">
+        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+      </div>
+      <h2 style="color: #2E7D32;">¡Reserva Confirmada!</h2>
+      <p style="font-size: 16px; color: var(--navy);">Tu código de boleto es: <strong id="ticket-code" style="font-size: 20px; color: var(--orange);"></strong></p>
+      <p style="color: var(--mist); margin-bottom: 30px;">Hemos enviado un comprobante a tu correo electrónico.</p>
+      <a href="/" class="btn btn-primary">Volver al Inicio</a>
+    </div>
+
+  </div>
+</main>
+
+<%- include('partials/scripts') %>
+<script>
+  window.USER_DATA = {
+    nombre: "<%= locals.usuario ? (locals.usuario.nombre + ' ' + locals.usuario.apellidos).trim() : '' %>"
+  };
+</script>
+<script src="/scripts/reservas.js"></script>
+</body>
+</html>

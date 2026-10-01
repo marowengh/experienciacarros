@@ -1,0 +1,202 @@
+<!-- ================= DESTINOS ================= -->
+<section id="destinos">
+  <div class="container">
+    <div class="section-head" style="text-align: center; max-width: 800px; margin: 0 auto 50px auto;">
+      <div class="eyebrow" style="display: inline-block; padding: 8px 20px; background: rgba(178, 210, 53, 0.15); color: #7a931a; border-radius: 30px; font-weight: 800; text-transform: uppercase; letter-spacing: 2px; font-size: 0.85rem; margin-bottom: 15px; border: 1px solid rgba(178, 210, 53, 0.3);">
+        Explora Nuestras Rutas
+      </div>
+      <h2 style="font-size: 2.8rem; font-weight: 800; color: var(--navy); margin-bottom: 20px; line-height: 1.2; letter-spacing: -1px;">
+        Movilidad de <span style="background: linear-gradient(135deg, #B2D235 0%, #0f172a 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Nueva Generación</span>
+      </h2>
+      <p style="font-size: 1.15rem; color: #64748b; line-height: 1.7; max-width: 650px; margin: 0 auto;">
+        Conexiones de alta eficiencia y precisión. Despliegues diarios desde nuestro Hub en Ayacucho hacia los principales nodos de la red nacional, garantizando confort absoluto y puntualidad.
+      </p>
+    </div>
+  </div>
+
+  <div class="dest-slider-wrap">
+    <button class="nav-btn prev" id="dest-prev" aria-label="Anterior">&#8249;</button>
+
+    <div class="track-outer">
+      <div class="track-inner" id="dest-inner">
+
+        <% if (typeof destinos !== 'undefined' && destinos.length > 0) { %>
+          <% destinos.forEach(function(dest) { %>
+            <div class="dest-card-v2" style="position: relative;">
+              <!-- Corazón en la esquina superior derecha -->
+              <div style="position: absolute; top: 15px; right: 15px; z-index: 10; display: flex; align-items: center; justify-content: center;">
+                <svg style="width: 24px; height: 24px; color: #FF1A1A; cursor: pointer; transition: transform 0.2s; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));" onmouseover="this.style.transform='scale(1.15)'" onmouseout="this.style.transform='scale(1)'" fill="currentColor" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+              </div>
+
+              <div class="card-photo <%= dest.clase_imagen %>"></div>
+              <div class="card-glass">
+                <span class="card-badge"><%= dest.tiempo_viaje %></span>
+                <h3><%= dest.nombre %></h3>
+                <p class="card-desc"><%= dest.descripcion %></p>
+                <div class="meta-row">
+                  <span class="meta-txt"><%= dest.frecuencia_salidas %></span>
+                  <span class="card-price"><%= dest.precio_base ? 'S/ ' + dest.precio_base : 'Consultar' %></span>
+                </div>
+                <button class="cta-btn" onclick="reservarRuta('<%= dest.nombre %>', '<%= dest.precio_base ? 'S/ ' + dest.precio_base : 'Consultar' %>')">Reservar ahora →</button>
+              </div>
+            </div>
+          <% }); %>
+        <% } %>
+
+      </div>
+    </div>
+
+    <button class="nav-btn next" id="dest-next" aria-label="Siguiente">&#8250;</button>
+  </div>
+
+  <div class="dest-dots" id="dest-dots"></div>
+</section>
+
+<!-- Toast de reserva -->
+<div id="reserva-toast"></div>
+
+<script>
+(function(){
+  const PER_VIEW = window.innerWidth < 600 ? 1 : window.innerWidth < 900 ? 2 : window.innerWidth < 1200 ? 3 : 4;
+  const cards = document.querySelectorAll('.dest-card-v2');
+  const inner = document.getElementById('dest-inner');
+  const trackOuter = document.querySelector('.track-outer');
+  const prevBtn = document.getElementById('dest-prev');
+  const nextBtn = document.getElementById('dest-next');
+  const dotsWrap = document.getElementById('dest-dots');
+  const total = cards.length;
+  const maxIdx = Math.max(0, total - PER_VIEW);
+  let cur = 0;
+  let dotEls = [];
+  let isDragging = false;
+  let startX = 0;
+  let autoPlayInterval;
+
+  function buildDots(){
+    dotsWrap.innerHTML = '';
+    dotEls = [];
+    for(let i = 0; i <= maxIdx; i++){
+      const d = document.createElement('div');
+      d.className = 'dest-dot' + (i === 0 ? ' active' : '');
+      d.onclick = () => { go(i); resetAutoPlay(); };
+      dotsWrap.appendChild(d);
+      dotEls.push(d);
+    }
+  }
+
+  function go(i){
+    // Permitir ciclo infinito (rotacional)
+    if (i > maxIdx) i = 0;
+    if (i < 0) i = maxIdx;
+
+    cur = i;
+    let cardW = 0;
+    if (cards.length > 0) {
+      cardW = cards[0].offsetWidth + 20; // ancho de tarjeta + margen (aprox)
+    }
+    
+    inner.style.transition = 'transform 0.4s ease-out';
+    inner.style.transform = `translateX(-${cur * cardW}px)`;
+    
+    // Como es infinito, los botones nunca se desactivan
+    if(prevBtn) prevBtn.disabled = false;
+    if(nextBtn) nextBtn.disabled = false;
+
+    dotEls.forEach((d, j) => {
+      d.classList.toggle('active', j === cur);
+    });
+  }
+
+  function startAutoPlay() {
+    if (cards.length === 0) return;
+    autoPlayInterval = setInterval(() => {
+      go(cur + 1);
+    }, 3500); // Cambio cada 3.5 segundos (movimiento suave)
+  }
+
+  function resetAutoPlay() {
+    clearInterval(autoPlayInterval);
+    startAutoPlay();
+  }
+
+  prevBtn.onclick = () => { go(cur - 1); resetAutoPlay(); };
+  nextBtn.onclick = () => { go(cur + 1); resetAutoPlay(); };
+  
+  // Soporte para arrastre con el mouse (Drag)
+  trackOuter.style.cursor = 'grab';
+  
+  trackOuter.addEventListener('mousedown', (e) => {
+    isDragging = true;
+    startX = e.pageX;
+    trackOuter.style.cursor = 'grabbing';
+    clearInterval(autoPlayInterval); // Pausar autoplay al interactuar
+  });
+  
+  trackOuter.addEventListener('mouseleave', () => {
+    if(isDragging) {
+      isDragging = false;
+      trackOuter.style.cursor = 'grab';
+      startAutoPlay(); // Reanudar autoplay
+    }
+  });
+  
+  trackOuter.addEventListener('mouseup', (e) => {
+    if(!isDragging) return;
+    isDragging = false;
+    trackOuter.style.cursor = 'grab';
+    
+    const diffX = e.pageX - startX;
+    if (diffX > 50) {
+      go(cur - 1); // Deslizó hacia la derecha (ver anterior)
+    } else if (diffX < -50) {
+      go(cur + 1); // Deslizó hacia la izquierda (ver siguiente)
+    }
+    startAutoPlay();
+  });
+  
+  trackOuter.addEventListener('mousemove', (e) => {
+    if (!isDragging) return;
+    e.preventDefault(); // Evitar selección de texto
+  });
+
+  // Soporte para gestos táctiles (Móviles)
+  trackOuter.addEventListener('touchstart', (e) => {
+    isDragging = true;
+    startX = e.touches[0].clientX;
+    clearInterval(autoPlayInterval);
+  }, {passive: true});
+
+  trackOuter.addEventListener('touchend', (e) => {
+    if(!isDragging) return;
+    isDragging = false;
+    const endX = e.changedTouches[0].clientX;
+    const diffX = endX - startX;
+    
+    if (diffX > 50) {
+      go(cur - 1);
+    } else if (diffX < -50) {
+      go(cur + 1);
+    }
+    startAutoPlay();
+  });
+
+  buildDots();
+  go(0);
+  startAutoPlay();
+
+  window.reservarRuta = function(dest, precio){
+    // Redirigir a la página de reservas
+    window.location.href = '/reservar?destino=' + encodeURIComponent(dest);
+  };
+
+  cards.forEach((c, i) => {
+    c.style.opacity = '0';
+    c.style.transform = 'translateY(20px)';
+    setTimeout(() => {
+      c.style.transition = 'opacity .4s ease, transform .4s ease';
+      c.style.opacity = '1';
+      c.style.transform = 'translateY(0)';
+    }, i * 60);
+  });
+})();
+</script>

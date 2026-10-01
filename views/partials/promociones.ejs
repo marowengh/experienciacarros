@@ -1,0 +1,341 @@
+<!-- ================= POPUP PROMOCIONAL PREMIUM ================= -->
+<div id="promo-flotante" class="premium-promo">
+  <div class="promo-glow"></div>
+  <button class="close-promo" onclick="document.getElementById('promo-flotante').style.display='none'" aria-label="Cerrar promoción">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+  </button>
+  
+  <div class="promo-content-wrapper">
+    <div class="promo-image-side">
+      <div class="image-overlay"></div>
+      <img src="/imagenes/lima.png" alt="Promoción Especial" onerror="this.src='https://images.unsplash.com/photo-1587595431973-160d0d94add1?w=400&q=80'">
+      <div class="promo-badge">TIEMPO LIMITADO</div>
+    </div>
+    
+    <div class="promo-text-side">
+      <div class="promo-header">
+        <span class="promo-eyebrow">Oferta Exclusiva</span>
+        <div class="sparkles">✨</div>
+      </div>
+      
+      <h4 class="promo-title">15% de <span class="text-gradient">Descuento</span></h4>
+      <p class="promo-desc">
+        Eleva tu experiencia de viaje. Reserva ahora en rutas nacionales y disfruta de un 15% off directo.
+      </p>
+      
+      <div class="promo-code-box" onclick="navigator.clipboard.writeText('VIAJA15'); this.classList.add('copied'); setTimeout(() => this.classList.remove('copied'), 2000);">
+        <span class="code-label">CÓDIGO:</span>
+        <strong class="code-value">VIAJA15</strong>
+        <svg class="copy-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+        <div class="copy-tooltip">¡Copiado!</div>
+      </div>
+      
+      <a href="/reservar" class="promo-btn">
+        <span>Canjear Beneficio</span>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+      </a>
+    </div>
+  </div>
+</div>
+
+<style>
+  :root {
+    --promo-glass-bg: rgba(20, 20, 25, 0.85);
+    --promo-glass-border: rgba(255, 255, 255, 0.1);
+    --promo-accent: #f59e0b; /* Amber */
+    --promo-accent-grad: linear-gradient(135deg, #f59e0b 0%, #ea580c 100%);
+    --promo-text: #f8fafc;
+    --promo-text-muted: #94a3b8;
+  }
+
+  .premium-promo {
+    position: fixed;
+    bottom: 30px;
+    left: 30px;
+    width: 480px;
+    background: var(--promo-glass-bg);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--promo-glass-border);
+    border-radius: 20px;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255,255,255,0.05) inset;
+    z-index: 9999;
+    font-family: 'Inter', system-ui, sans-serif;
+    transform: translateY(100px) scale(0.95);
+    opacity: 0;
+    animation: promoEntrance 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    animation-delay: 0.5s; /* Aparece después de un rato */
+  }
+
+  .promo-glow {
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle at top right, rgba(245, 158, 11, 0.15), transparent 40%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .close-promo {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--promo-text-muted);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 10;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  
+  .close-promo:hover {
+    background: rgba(255, 255, 255, 0.15);
+    color: #fff;
+    transform: rotate(90deg);
+  }
+
+  .promo-content-wrapper {
+    display: flex;
+    width: 100%;
+    position: relative;
+    z-index: 1;
+    overflow: hidden;
+    border-radius: 20px;
+  }
+
+  .promo-image-side {
+    width: 45%;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .image-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to right, transparent, var(--promo-glass-bg) 100%);
+    z-index: 2;
+  }
+
+  .promo-image-side img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 7s linear;
+  }
+
+  .premium-promo:hover .promo-image-side img {
+    transform: scale(1.15);
+  }
+
+  .promo-badge {
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(8px);
+    color: #fff;
+    font-size: 0.65rem;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 20px;
+    border: 1px solid rgba(255,255,255,0.2);
+    z-index: 3;
+    letter-spacing: 1px;
+  }
+
+  .promo-text-side {
+    width: 55%;
+    padding: 30px 25px 30px 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .promo-header {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 8px;
+  }
+
+  .promo-eyebrow {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--promo-accent);
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+  }
+
+  .sparkles {
+    font-size: 0.9rem;
+    animation: sparkle 2s infinite alternate;
+  }
+
+  .promo-title {
+    margin: 0 0 12px 0;
+    color: var(--promo-text);
+    font-size: 1.7rem;
+    font-weight: 800;
+    line-height: 1.1;
+    letter-spacing: -0.5px;
+  }
+
+  .text-gradient {
+    background: var(--promo-accent-grad);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .promo-desc {
+    margin: 0 0 20px 0;
+    font-size: 0.85rem;
+    color: var(--promo-text-muted);
+    line-height: 1.6;
+  }
+
+  .promo-code-box {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 12px 16px;
+    border-radius: 12px;
+    cursor: pointer;
+    margin-bottom: 20px;
+    transition: all 0.2s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .promo-code-box:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.2);
+  }
+  
+  .promo-code-box:active {
+    transform: scale(0.98);
+  }
+
+  .code-label {
+    font-size: 0.7rem;
+    color: var(--promo-text-muted);
+    font-weight: 600;
+    letter-spacing: 1px;
+  }
+
+  .code-value {
+    color: var(--promo-text);
+    font-weight: 700;
+    font-size: 1.1rem;
+    letter-spacing: 1.5px;
+  }
+
+  .copy-icon {
+    color: var(--promo-text-muted);
+    transition: color 0.2s;
+  }
+
+  .promo-code-box:hover .copy-icon {
+    color: var(--promo-text);
+  }
+
+  .copy-tooltip {
+    position: absolute;
+    inset: 0;
+    background: var(--promo-accent-grad);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 0.9rem;
+    opacity: 0;
+    transform: translateY(100%);
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .promo-code-box.copied .copy-tooltip {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .promo-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    background: var(--promo-text);
+    color: #0f172a;
+    text-decoration: none;
+    font-weight: 700;
+    padding: 14px;
+    border-radius: 12px;
+    font-size: 0.95rem;
+    transition: all 0.3s;
+    box-shadow: 0 4px 14px rgba(255, 255, 255, 0.25);
+  }
+
+  .promo-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(255, 255, 255, 0.3);
+    background: #f1f5f9;
+  }
+  
+  .promo-btn svg {
+    transition: transform 0.3s;
+  }
+  
+  .promo-btn:hover svg {
+    transform: translateX(4px);
+  }
+
+  @keyframes promoEntrance {
+    0% {
+      opacity: 0;
+      transform: translateY(40px) scale(0.95);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+  }
+
+  @keyframes sparkle {
+    0% { opacity: 0.5; filter: hue-rotate(0deg); }
+    100% { opacity: 1; filter: hue-rotate(45deg); transform: scale(1.2); }
+  }
+  
+  /* Responsive */
+  @media (max-width: 600px) {
+    .premium-promo {
+      bottom: 15px;
+      left: 15px;
+      right: 15px;
+      width: auto;
+    }
+    .promo-content-wrapper {
+      flex-direction: column;
+    }
+    .image-overlay {
+      background: linear-gradient(to bottom, transparent, var(--promo-glass-bg) 100%);
+    }
+    .promo-image-side {
+      width: 100%;
+      height: 140px;
+    }
+    .promo-text-side {
+      width: 100%;
+      padding: 15px 20px 25px;
+    }
+  }
+</style>
