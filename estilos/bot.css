@@ -1,0 +1,89 @@
+/* ================= BOT FLOTANTE CROPPER ================= */
+.cropper-bot-widget {
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  width: 320px;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(12px);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  box-shadow: 0 16px 40px rgba(6, 36, 84, 0.2);
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  font-family: var(--font-body);
+}
+
+.bot-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  background: var(--navy);
+  color: #fff;
+  cursor: grab;
+  font-family: var(--font-display);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.bot-header:active {
+  cursor: grabbing;
+}
+
+.bot-header svg {
+  width: 18px;
+  height: 18px;
+  margin-right: 8px;
+  stroke: var(--orange);
+}
+
+.bot-header span {
+  flex: 1;
+}
+
+.bot-header button {
+  background: none;
+  border: none;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 22px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.bot-header button:hover {
+  color: #fff;
+}
+
+.bot-body {
+  padding: 16px;
+  background: #fff;
+}
+
+.upload-prompt {
+  border: 2px dashed var(--line);
+  border-radius: 12px;
+  padding: 30px 20px;
+  text-align: center;
+  color: var(--mist);
+  transition: border-color 0.2s, background 0.2s;
+  cursor: pointer;
+}
+
+.upload-prompt:hover, .upload-prompt.dragover {
+  border-color: var(--orange);
+  background: rgba(255, 140, 0, 0.05);
+}
+
+.upload-prompt p {
+  font-size: 13px;
+  margin-bottom: 12px;
+}
+
+.bot-footer {
+  padding: 12px 16px;
+  background: var(--cream);
+  border-top: 1px solid var(--line);
+}
