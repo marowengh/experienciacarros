@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express');
 const multer = require('multer');
 const path = require('path');
@@ -164,7 +165,7 @@ app.get('/api/destinos', (req, res) => {
 app.use(express.json());
 
 app.post('/api/reserva', (req, res) => {
-    const { viaje_id, nombre, documento, fecha, cantidad, ubicacion } = req.body;
+    const { viaje_id, nombre, documento, fecha, cantidad, cantidad_adultos, cantidad_ninos, ubicacion, totalPago } = req.body;
     
     if (typeof viaje_id !== 'string' && typeof viaje_id !== 'number' || typeof nombre !== 'string' || typeof documento !== 'string' || typeof fecha !== 'string') {
         return res.status(400).json({ error: 'Formato de datos inválido' });
@@ -177,14 +178,17 @@ app.post('/api/reserva', (req, res) => {
     const usuario_id = req.session.usuario ? req.session.usuario.id : null;
     const codigoBoleto = 'VT-' + Math.floor(100000 + Math.random() * 900000);
     const qty = cantidad ? parseInt(cantidad) : 1;
+    const qtyAdultos = cantidad_adultos ? parseInt(cantidad_adultos) : qty;
+    const qtyNinos = cantidad_ninos ? parseInt(cantidad_ninos) : 0;
     const ubi = ubicacion || 'Atrás';
+    const tPago = totalPago ? parseFloat(totalPago) : 0;
 
     const sql = `
-        INSERT INTO reservas (viaje_id, usuario_id, cliente_nombre, cliente_documento, cantidad_pasajeros, ubicacion, fecha_viaje, codigo_boleto)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+        INSERT INTO reservas (viaje_id, usuario_id, cliente_nombre, cliente_documento, cantidad_pasajeros, cantidad_adultos, cantidad_ninos, ubicacion, fecha_viaje, codigo_boleto, total_pagado)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `;
 
-    db.query(sql, [viaje_id, usuario_id, nombre, documento, qty, ubi, fecha, codigoBoleto], (err, result) => {
+    db.query(sql, [viaje_id, usuario_id, nombre, documento, qty, qtyAdultos, qtyNinos, ubi, fecha, codigoBoleto, tPago], (err, result) => {
         if (err) {
             console.error('Error al registrar la reserva:', err);
             return res.status(500).json({ error: 'Error al procesar la reserva' });
@@ -277,7 +281,7 @@ app.put('/api/admin/viajes/:id', (req, res) => {
     const sql = `UPDATE viajes SET origen=?, destino=?, hora_salida=?, hora_llegada=?, servicio=?, modelo_carro=?, precio=?, asientos_totales=?, asientos_disponibles=? WHERE id=?`;
     db.query(sql, [origen, destino, hora_salida, hora_llegada, servicio, modelo_carro, precio, asientos_totales, asientos_disponibles, id], (err, result) => {
         if (err) return res.status(500).json({ error: 'Error al actualizar el viaje' });
-        res.json({ success: true });
+        res.json({ success: true, rol: usuario.rol || 'user' });
     });
 });
 
@@ -323,9 +327,20 @@ app.delete('/api/admin/destinos/:id', (req, res) => {
 app.put('/api/admin/reservas/:id', (req, res) => {
     if (!req.session.usuario) return res.status(401).json({ error: 'No autorizado' });
     const { id } = req.params;
-    const { cliente_nombre, cliente_documento, cantidad_pasajeros, ubicacion, fecha_viaje } = req.body;
-    const sql = `UPDATE reservas SET cliente_nombre=?, cliente_documento=?, cantidad_pasajeros=?, ubicacion=?, fecha_viaje=? WHERE id=?`;
-    db.query(sql, [cliente_nombre, cliente_documento, cantidad_pasajeros, ubicacion, fecha_viaje, id], (err, result) => {
+    const { cliente_nombre, cliente_documento, cantidad_pasajeros, ubicacion, fecha_viaje, precio_manual } = req.body;
+    
+    let sql = `UPDATE reservas SET cliente_nombre=?, cliente_documento=?, cantidad_pasajeros=?, ubicacion=?, fecha_viaje=?`;
+    let params = [cliente_nombre, cliente_documento, cantidad_pasajeros, ubicacion, fecha_viaje];
+    
+    if (precio_manual !== undefined) {
+        sql += `, precio_manual=?`;
+        params.push(precio_manual === '' ? null : parseFloat(precio_manual));
+    }
+    
+    sql += ` WHERE id=?`;
+    params.push(id);
+
+    db.query(sql, params, (err, result) => {
         if (err) return res.status(500).json({ error: 'Error al actualizar la reserva' });
         res.json({ success: true });
     });
@@ -341,19 +356,19 @@ app.delete('/api/admin/reservas/:id', (req, res) => {
 // --- CRUD USUARIOS ---
 app.get('/api/admin/usuarios', (req, res) => {
     if (!req.session.usuario) return res.status(401).json({ error: 'No autorizado' });
-    db.query('SELECT id, nombre, apellidos, email, telefono, fecha_registro FROM usuarios ORDER BY id DESC', (err, results) => {
+    db.query('SELECT id, nombre, apellidos, email, telefono, rol, fecha_registro FROM usuarios ORDER BY id DESC', (err, results) => {
         if (err) return res.status(500).json({ error: 'Error del servidor' });
         res.json(results);
     });
 });
 app.post('/api/admin/usuarios', async (req, res) => {
     if (!req.session.usuario) return res.status(401).json({ error: 'No autorizado' });
-    const { nombre, apellidos, email, telefono, password } = req.body;
+    const { nombre, apellidos, email, telefono, rol, password } = req.body;
     try {
         const salt = await bcrypt.genSalt(10);
         const hash = password ? await bcrypt.hash(password, salt) : 'admin_dummy_hash';
-        const sql = `INSERT INTO usuarios (nombre, apellidos, email, telefono, password_hash) VALUES (?, ?, ?, ?, ?)`;
-        db.query(sql, [nombre, apellidos, email, telefono, hash], (err, result) => {
+        const sql = `INSERT INTO usuarios (nombre, apellidos, email, telefono, rol, password_hash) VALUES (?, ?, ?, ?, ?, ?)`;
+        db.query(sql, [nombre, apellidos, email, telefono, rol || 'user', hash], (err, result) => {
             if (err) return res.status(500).json({ error: 'Error al crear usuario' });
             res.json({ success: true, id: result.insertId });
         });
@@ -364,19 +379,19 @@ app.post('/api/admin/usuarios', async (req, res) => {
 app.put('/api/admin/usuarios/:id', async (req, res) => {
     if (!req.session.usuario) return res.status(401).json({ error: 'No autorizado' });
     const { id } = req.params;
-    const { nombre, apellidos, email, telefono, password } = req.body;
+    const { nombre, apellidos, email, telefono, rol, password } = req.body;
     try {
         if (password) {
             const salt = await bcrypt.genSalt(10);
             const hash = await bcrypt.hash(password, salt);
-            const sql = `UPDATE usuarios SET nombre=?, apellidos=?, email=?, telefono=?, password_hash=? WHERE id=?`;
-            db.query(sql, [nombre, apellidos, email, telefono, hash, id], (err, result) => {
+            const sql = `UPDATE usuarios SET nombre=?, apellidos=?, email=?, telefono=?, rol=?, password_hash=? WHERE id=?`;
+            db.query(sql, [nombre, apellidos, email, telefono, rol || 'user', hash, id], (err, result) => {
                 if (err) return res.status(500).json({ error: 'Error al actualizar usuario' });
                 res.json({ success: true });
             });
         } else {
-            const sql = `UPDATE usuarios SET nombre=?, apellidos=?, email=?, telefono=? WHERE id=?`;
-            db.query(sql, [nombre, apellidos, email, telefono, id], (err, result) => {
+            const sql = `UPDATE usuarios SET nombre=?, apellidos=?, email=?, telefono=?, rol=? WHERE id=?`;
+            db.query(sql, [nombre, apellidos, email, telefono, rol || 'user', id], (err, result) => {
                 if (err) return res.status(500).json({ error: 'Error al actualizar usuario' });
                 res.json({ success: true });
             });
@@ -510,6 +525,8 @@ app.post('/api/login', authLimiter, (req, res) => {
             apellidos: usuario.apellidos,
             email: usuario.email,
             telefono: usuario.telefono,
+            rol: usuario.rol || 'user',
+            foto: usuario.foto,
             needsPassword: usuario.password_hash === 'google_sso_dummy_hash'
         };
 
@@ -587,6 +604,37 @@ app.get('/api/logout', (req, res) => {
 });
 
 
+
+
+// Middleware de autenticación
+const requireAuth = (req, res, next) => {
+    if (!req.session.usuario) {
+        return res.status(401).json({ error: 'No autorizado. Debes iniciar sesión.' });
+    }
+    next();
+};
+
+// Actualizar perfil de usuario
+app.put('/api/usuarios/perfil', requireAuth, (req, res) => {
+  const { nombre, apellidos, telefono, foto } = req.body;
+  const userId = req.session.usuario.id;
+  
+  const query = 'UPDATE usuarios SET nombre = ?, apellidos = ?, telefono = ?, foto = ? WHERE id = ?';
+  connection.query(query, [nombre, apellidos, telefono, foto, userId], (err, results) => {
+    if (err) {
+      console.error(err);
+      return res.status(500).json({ success: false, error: 'Error actualizando perfil' });
+    }
+    
+    // Update session data
+    req.session.usuario.nombre = nombre;
+    req.session.usuario.apellidos = apellidos;
+    req.session.usuario.telefono = telefono;
+    req.session.usuario.foto = foto;
+    
+    res.json({ success: true });
+  });
+});
 
 app.listen(PORT, '0.0.0.0', () => {
     console.log(`Servidor local corriendo en http://localhost:${PORT}`);

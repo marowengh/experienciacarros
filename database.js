@@ -1,20 +1,24 @@
 const mysql = require('mysql2');
 
-const connection = mysql.createConnection({
+const connection = mysql.createPool({
   host: process.env.DB_HOST || 'mysql-247236df-marowengonzaleshl-b3c7.d.aivencloud.com',
   user: process.env.DB_USER || 'avnadmin',
   password: process.env.DB_PASSWORD,
   port: process.env.DB_PORT || 18521,
   database: process.env.DB_NAME || 'defaultdb',
-  ssl: { rejectUnauthorized: false }
+  ssl: { rejectUnauthorized: false },
+  waitForConnections: true,
+  connectionLimit: 10,
+  queueLimit: 0
 });
 
-connection.connect((err) => {
+connection.getConnection((err, conn) => {
   if (err) {
     console.error('Error conectando a MySQL:', err);
     return;
   }
   console.log('Conectado a MySQL exitosamente.');
+  conn.release();
 
   // La base de datos (defaultdb) ya está especificada en la conexión,
   // así que inicializamos las tablas directamente.
@@ -45,9 +49,13 @@ function inicializarTablas() {
       cliente_nombre VARCHAR(255) NOT NULL,
       cliente_documento VARCHAR(100),
       cantidad_pasajeros INT DEFAULT 1,
+      cantidad_adultos INT DEFAULT 1,
+      cantidad_ninos INT DEFAULT 0,
       ubicacion VARCHAR(50),
       fecha_viaje DATE NOT NULL,
       codigo_boleto VARCHAR(50) NOT NULL,
+      precio_manual DECIMAL(10,2) DEFAULT NULL,
+      total_pagado DECIMAL(10,2) DEFAULT 0.00,
       fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
       FOREIGN KEY (viaje_id) REFERENCES viajes(id),
       FOREIGN KEY (usuario_id) REFERENCES usuarios(id)
@@ -74,6 +82,8 @@ function inicializarTablas() {
       email VARCHAR(255) NOT NULL UNIQUE,
       telefono VARCHAR(50),
       password_hash VARCHAR(255) NOT NULL,
+      rol VARCHAR(20) DEFAULT 'user',
+      foto VARCHAR(255),
       fecha_registro TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     )
   `;
