@@ -19,12 +19,22 @@
     </div>
   <% } else { %>
     <div style="display: grid; gap: 20px;">
-      <% reservas.forEach(function(reserva) { %>
-        <div style="background: #fff; border-radius: 16px; padding: 24px; box-shadow: 0 4px 20px rgba(0,0,0,0.03); display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; border-left: 6px solid #B2D235;">
+      <% reservas.forEach(function(reserva) { 
+          const viajeDate = new Date(reserva.fecha_viaje);
+          const now = new Date();
+          viajeDate.setHours(0,0,0,0);
+          now.setHours(0,0,0,0);
+          const isExpired = viajeDate < now;
+          const statusBadge = isExpired 
+            ? `<span style="background: #fee2e2; color: #b91c1c; padding: 4px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: 700; margin-left: 10px;">CADUCADO</span>` 
+            : `<span style="background: #dcfce7; color: #15803d; padding: 4px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: 700; margin-left: 10px;">VIGENTE</span>`;
+      %>
+        <div style="background: #fff; border-radius: 16px; padding: 24px; box-shadow: 0 4px 20px rgba(0,0,0,0.03); display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; border-left: 6px solid <%= isExpired ? '#94a3b8' : '#B2D235' %>; opacity: <%= isExpired ? '0.7' : '1' %>;">
           
           <div style="flex: 1; min-width: 250px;">
-            <div style="font-size: 0.85rem; color: var(--mist); font-weight: 600; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px;">
-              Boleto: <span style="color: var(--navy);"><%= reserva.codigo_boleto %></span>
+            <div style="font-size: 0.85rem; color: var(--mist); font-weight: 600; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; display: flex; align-items: center;">
+              Boleto: <span style="color: var(--navy); margin-left: 5px;"><%= reserva.codigo_boleto %></span>
+              <%- statusBadge %>
             </div>
             <h3 style="font-size: 1.5rem; color: var(--navy); font-weight: 800; margin-bottom: 8px;">
               <%= reserva.origen %> → <%= reserva.destino %>
@@ -35,12 +45,13 @@
             </p>
           </div>
           
-          <div style="text-align: right; min-width: 150px;">
+          <div style="text-align: right; min-width: 150px; display: flex; flex-direction: column; gap: 10px; align-items: flex-end;">
             <div style="background: #F4F6F8; padding: 12px 16px; border-radius: 8px; display: inline-block; text-align: left;">
               <p style="font-size: 0.85rem; color: var(--mist); margin-bottom: 4px; font-weight: 600;">HORARIO Y SERVICIO</p>
               <p style="color: var(--navy); font-weight: 700; margin-bottom: 4px;"><%= reserva.hora_salida %> - <%= reserva.hora_llegada %></p>
               <p style="font-size: 0.9rem; color: #B2D235; font-weight: 800; text-transform: uppercase;"><%= reserva.servicio %></p>
             </div>
+            <button onclick="generarComprobante('<%= reserva.codigo_boleto %>', '<%= reserva.cliente_nombre %>', '<%= reserva.cliente_documento %>', '<%= reserva.origen %>', '<%= reserva.destino %>', '<%= new Date(reserva.fecha_viaje).toLocaleDateString('es-ES') %>', 'Por Validar')" class="btn" style="padding: 8px 16px; background: #0f172a; color: white; border: none; border-radius: 6px; font-weight: 600; cursor: pointer; font-size: 0.85rem;">Detalles</button>
           </div>
           
         </div>
@@ -53,5 +64,87 @@
 <%- include('partials/footer') %>
 <%- include('partials/bot') %>
 <%- include('partials/scripts') %>
+<script>
+  function generarComprobante(codigo, nombre, doc, origen, destino, fecha, total) {
+    const nw = window.open('', '_blank');
+    nw.document.write(`
+      <html>
+      <head>
+        <title>Comprobante - ${codigo}</title>
+        <style>
+          body { font-family: 'Inter', sans-serif; padding: 40px; color: #1e293b; background: #f8fafc; }
+          .comprobante { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 16px; padding: 40px; max-width: 650px; margin: 0 auto; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04); }
+          .header { text-align: center; border-bottom: 2px dashed #cbd5e1; padding-bottom: 25px; margin-bottom: 30px; }
+          .header h2 { margin: 0; color: #0f172a; font-size: 28px; font-weight: 900; letter-spacing: -0.5px; }
+          .header h2 span { color: #B2D235; }
+          .header p { margin: 8px 0 0 0; color: #64748b; font-size: 15px; font-weight: 500; }
+          .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 30px; }
+          .info-box { background: #f8fafc; padding: 15px; border-radius: 8px; border: 1px solid #f1f5f9; }
+          .label { display: block; font-size: 12px; font-weight: 600; color: #64748b; text-transform: uppercase; margin-bottom: 5px; }
+          .value { font-size: 15px; font-weight: 700; color: #0f172a; }
+          .total-box { background: #0f172a; color: white; padding: 20px; border-radius: 12px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
+          .total-label { font-size: 16px; font-weight: 600; color: #cbd5e1; }
+          .total-value { font-size: 24px; font-weight: 800; color: #B2D235; }
+          .footer { text-align: center; padding-top: 25px; border-top: 1px solid #e2e8f0; }
+          .footer p { margin: 0 0 10px 0; font-size: 14px; color: #475569; font-weight: 500; }
+          .contact { display: inline-block; background: #e0f2fe; color: #0284c7; padding: 8px 16px; border-radius: 20px; font-size: 13px; font-weight: 600; text-decoration: none; }
+          .print-btn { display: inline-block; margin-top: 20px; padding: 12px 24px; background: #B2D235; color: #0f172a; font-weight: 700; border: none; border-radius: 8px; cursor: pointer; transition: 0.2s; font-size: 15px; }
+          .print-btn:hover { background: #a3c323; }
+          @media print { 
+            body { padding: 0; background: white; } 
+            .comprobante { box-shadow: none; border: none; padding: 0; } 
+            .print-btn { display: none; }
+          }
+        </style>
+      </head>
+      <body>
+        <div class="comprobante">
+          <div class="header">
+            <h2>VISION<span>21</span></h2>
+            <p>Comprobante de Pago Electrónico</p>
+          </div>
+          
+          <div class="info-grid">
+            <div class="info-box">
+              <span class="label">Boleto Nro</span>
+              <span class="value">${codigo}</span>
+            </div>
+            <div class="info-box">
+              <span class="label">Fecha de Viaje</span>
+              <span class="value">${fecha}</span>
+            </div>
+            <div class="info-box">
+              <span class="label">Pasajero</span>
+              <span class="value">${nombre}</span>
+            </div>
+            <div class="info-box">
+              <span class="label">Documento</span>
+              <span class="value">${doc}</span>
+            </div>
+            <div class="info-box" style="grid-column: span 2;">
+              <span class="label">Ruta</span>
+              <span class="value" style="font-size: 18px;">${origen} &rarr; ${destino}</span>
+            </div>
+          </div>
+          
+          <div class="total-box">
+            <span class="total-label">Total Pagado</span>
+            <span class="total-value">S/ ${total}</span>
+          </div>
+          
+          <div class="footer">
+            <p>¡Gracias por viajar con nosotros!</p>
+            <p style="font-size: 13px; color: #94a3b8; margin-bottom: 15px;">Para consultas o reprogramaciones, comunícate con nuestro soporte.</p>
+            <a href="https://wa.me/51999999999" target="_blank" class="contact">📞 Soporte WhatsApp: +51 999 999 999</a>
+            <br>
+            <button class="print-btn" onclick="window.print()">🖨️ Imprimir Comprobante</button>
+          </div>
+        </div>
+      </body>
+      </html>
+    `);
+    nw.document.close();
+  }
+</script>
 </body>
 </html>

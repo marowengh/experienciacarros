@@ -5,52 +5,179 @@
 
 <%- include('partials/header') %>
 
-<main style="padding: 40px 20px; max-width: 600px; margin: 0 auto;">
-  <div style="background: #fff; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border: 1px solid var(--line);">
-    <h2 style="color: var(--navy); margin-bottom: 20px;">Mi Perfil</h2>
-    
-    <% if (!locals.usuario.telefono) { %>
-      <div style="background: #fef2f2; color: #b91c1c; padding: 15px; border-radius: 8px; margin-bottom: 25px; border: 1px solid #fecaca;">
-        <strong>¡Atención!</strong> Completa los datos faltantes para finalizar la configuración de tu cuenta.
-      </div>
-    <% } %>
+<style>
+  .perfil-wrapper {
+    padding: 50px 20px;
+    max-width: 680px;
+    margin: 0 auto;
+  }
+  .perfil-card {
+    background: #fff;
+    border-radius: 20px;
+    box-shadow: 0 8px 40px rgba(0,0,0,0.08);
+    border: 1px solid var(--line);
+    overflow: hidden;
+  }
+  .perfil-header {
+    background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+    padding: 40px 30px 30px;
+    text-align: center;
+  }
+  .perfil-avatar {
+    width: 110px;
+    height: 110px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #B2D235, #8aaa1f);
+    color: #1e293b;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 48px;
+    font-weight: 800;
+    margin: 0 auto 16px auto;
+    border: 4px solid rgba(255,255,255,0.2);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+    font-family: 'Segoe UI', sans-serif;
+  }
+  .perfil-nombre {
+    color: #fff;
+    font-size: 24px;
+    font-weight: 700;
+    margin: 0 0 6px 0;
+  }
+  .perfil-email-header {
+    color: rgba(255,255,255,0.6);
+    font-size: 14px;
+    margin-bottom: 14px;
+  }
+  .perfil-badge {
+    display: inline-block;
+    padding: 5px 16px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 600;
+    background: rgba(178,210,53,0.2);
+    color: #B2D235;
+    border: 1px solid rgba(178,210,53,0.4);
+  }
+  .perfil-body {
+    padding: 30px;
+  }
+  .perfil-section-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: #94a3b8;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 18px;
+  }
+  .alerta-completar {
+    background: #fef2f2;
+    color: #b91c1c;
+    padding: 14px 18px;
+    border-radius: 10px;
+    margin-bottom: 25px;
+    border: 1px solid #fecaca;
+    font-size: 14px;
+  }
+  .perfil-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 16px;
+  }
+  .form-group { display: flex; flex-direction: column; }
+  .form-group.full { grid-column: 1 / -1; }
+  .form-group label { font-size: 13px; font-weight: 600; color: #475569; margin-bottom: 6px; }
+  .form-group input { padding: 12px 14px; border: 1.5px solid #e2e8f0; border-radius: 10px; font-size: 15px; color: #1e293b; transition: border-color 0.2s; outline: none; background: #fff; }
+  .form-group input:focus { border-color: #B2D235; box-shadow: 0 0 0 3px rgba(178,210,53,0.15); }
+  .form-group input[readonly], .form-group input:disabled { background: #f8fafc; color: #94a3b8; cursor: not-allowed; }
+  .form-group small { color: #94a3b8; font-size: 12px; margin-top: 5px; }
+  .btn-guardar {
+    width: 100%; padding: 15px; background: #B2D235; color: #1e293b; border: none;
+    border-radius: 12px; font-size: 16px; font-weight: 700; cursor: pointer;
+    margin-top: 10px; transition: all 0.2s; box-shadow: 0 4px 12px rgba(178,210,53,0.3);
+  }
+  .btn-guardar:hover { background: #9cbb1e; transform: translateY(-1px); }
+  .divider { border: none; border-top: 1px solid #f1f5f9; margin: 25px 0; }
+  .toast-success {
+    display: none; background: #f0fdf4; color: #166534;
+    border: 1px solid #bbf7d0; padding: 14px 18px;
+    border-radius: 10px; margin-bottom: 20px; font-size: 14px; font-weight: 600;
+  }
+  @media (max-width: 500px) { .perfil-grid { grid-template-columns: 1fr; } }
+</style>
 
-    <form id="perfil-form">
-      <div style="display: flex; gap: 15px; margin-bottom: 15px;">
-        <div style="flex: 1;">
-          <label style="display: block; margin-bottom: 5px; font-weight: 600; color: var(--navy);">Nombres</label>
-          <input type="text" id="perfil-nombre" value="<%= locals.usuario.nombre %>" required style="width: 100%; padding: 12px; border: 1px solid var(--line); border-radius: 8px;">
+<main class="perfil-wrapper">
+  <div class="perfil-card">
+
+    <div class="perfil-header">
+      <div class="perfil-avatar">
+        <%= locals.usuario.nombre.charAt(0).toUpperCase() %><%= locals.usuario.apellidos ? locals.usuario.apellidos.charAt(0).toUpperCase() : '' %>
+      </div>
+      <h2 class="perfil-nombre"><%= locals.usuario.nombre %> <%= locals.usuario.apellidos %></h2>
+      <p class="perfil-email-header"><%= locals.usuario.email %></p>
+      <span class="perfil-badge">&#128100; Usuario Regular</span>
+    </div>
+
+    <div class="perfil-body">
+
+      <div id="toast-ok" class="toast-success">&#9989; Perfil actualizado con exito.</div>
+
+      <% if (!locals.usuario.telefono) { %>
+        <div class="alerta-completar">
+          <strong>&#9888;&#65039; Atencion:</strong> Completa los datos faltantes para finalizar la configuracion de tu cuenta.
         </div>
-        <div style="flex: 1;">
-          <label style="display: block; margin-bottom: 5px; font-weight: 600; color: var(--navy);">Apellidos</label>
-          <input type="text" id="perfil-apellidos" value="<%= locals.usuario.apellidos %>" required style="width: 100%; padding: 12px; border: 1px solid var(--line); border-radius: 8px;">
+      <% } %>
+
+      <p class="perfil-section-title">Informacion Personal</p>
+
+      <form id="perfil-form">
+        <div class="perfil-grid">
+
+          <div class="form-group">
+            <label>URL de Foto de Perfil (Opcional)</label>
+            <input type="text" id="usr_foto" value="<%= locals.usuario.foto || '' %>" placeholder="https://ejemplo.com/mifoto.jpg">
+          </div>
+          <div class="form-group">
+            <label for="perfil-nombre">Nombres</label>
+            <input type="text" id="perfil-nombre" value="<%= locals.usuario.nombre %>" required>
+          </div>
+
+          <div class="form-group">
+            <label for="perfil-apellidos">Apellidos</label>
+            <input type="text" id="perfil-apellidos" value="<%= locals.usuario.apellidos %>" required>
+          </div>
+
+          <div class="form-group full">
+            <label>Correo Electronico</label>
+            <input type="email" value="<%= locals.usuario.email %>" readonly>
+          </div>
+
+          <div class="form-group full">
+            <label for="perfil-telefono">Telefono</label>
+            <input type="tel" id="perfil-telefono" value="<%= locals.usuario.telefono || '' %>" placeholder="987654321" required>
+          </div>
+
         </div>
-      </div>
 
-      <div style="margin-bottom: 15px;">
-        <label style="display: block; margin-bottom: 5px; font-weight: 600; color: var(--navy);">Correo Electrónico</label>
-        <input type="email" value="<%= locals.usuario.email %>" readonly style="width: 100%; padding: 12px; border: 1px solid var(--line); border-radius: 8px; background: #f8fafc; color: #64748b;">
-      </div>
+        <hr class="divider">
+        <p class="perfil-section-title">Seguridad</p>
 
-      <div style="margin-bottom: 15px;">
-        <label style="display: block; margin-bottom: 5px; font-weight: 600; color: var(--navy);">Teléfono</label>
-        <input type="tel" id="perfil-telefono" value="<%= locals.usuario.telefono || '' %>" placeholder="987654321" required style="width: 100%; padding: 12px; border: 1px solid var(--line); border-radius: 8px;">
-      </div>
+        <div class="form-group" style="margin-bottom: 20px;">
+          <label for="perfil-password">Contrasena</label>
+          <% if (locals.usuario.needsPassword) { %>
+            <input type="password" id="perfil-password" value="********" disabled>
+            <small>&#128274; Autenticado con Google - contrasena gestionada por Google.</small>
+          <% } else { %>
+            <input type="password" id="perfil-password" placeholder="Dejar en blanco para mantener la actual" minlength="6">
+          <% } %>
+        </div>
 
-      <div style="margin-bottom: 25px;">
-        <label style="display: block; margin-bottom: 5px; font-weight: 600; color: var(--navy);">Contraseña</label>
-        <% if (locals.usuario.needsPassword) { %>
-          <input type="password" id="perfil-password" value="********" disabled style="width: 100%; padding: 12px; border: 1px solid var(--line); border-radius: 8px; background: #f8fafc; color: #64748b; text-decoration: line-through;">
-          <small style="color: #64748b; margin-top: 5px; display: block;">Autenticado con Google (Contraseña gestionada por Google).</small>
-        <% } else { %>
-          <input type="password" id="perfil-password" placeholder="Dejar en blanco para mantener la actual" minlength="6" style="width: 100%; padding: 12px; border: 1px solid var(--line); border-radius: 8px;">
-        <% } %>
-      </div>
+        <button type="submit" class="btn-guardar">Guardar Cambios</button>
+      </form>
 
-      <button type="submit" class="btn btn-primary" style="width: 100%; padding: 14px; background: #B2D235; color: var(--navy); border: none; border-radius: 8px; font-weight: 700; cursor: pointer;">
-        Guardar Cambios
-      </button>
-    </form>
+    </div>
   </div>
 </main>
 
@@ -69,16 +196,16 @@ document.getElementById('perfil-form').addEventListener('submit', async (e) => {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ nombre, apellidos, telefono, password })
         });
-        
         const data = await res.json();
         if (res.ok) {
-            alert('Perfil actualizado con éxito');
-            window.location.reload();
+            const toast = document.getElementById('toast-ok');
+            toast.style.display = 'block';
+            setTimeout(() => { window.location.reload(); }, 1500);
         } else {
             alert(data.error || 'Error al actualizar');
         }
     } catch (err) {
-        alert('Error de conexión');
+        alert('Error de conexion');
     }
 });
 </script>

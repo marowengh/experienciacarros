@@ -76,15 +76,27 @@
         <!-- Opciones de Ubicación -->
         <div class="bus-container" style="padding: 30px; text-align: left; background: #fff; border-radius: 12px; border: 1px solid #e2e8f0; box-shadow: 0 4px 15px rgba(0,0,0,0.03);">
           
-          <div class="field-group" style="margin-bottom: 25px;">
-            <label style="font-weight: 700; color: var(--navy); display: block; margin-bottom: 10px; font-size: 1.1rem;">Cantidad de Pasajeros</label>
-            <select id="step2-qty" style="width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #cbd5e1; font-size: 1rem; color: var(--navy); font-weight: 600;">
-              <option value="1">1 Persona</option>
-              <option value="2">2 Personas</option>
-              <option value="3">3 Personas</option>
-              <option value="4">4 Personas</option>
-              <option value="5">5 Personas</option>
-            </select>
+          <div class="field-group" style="margin-bottom: 25px; display: flex; gap: 15px;">
+            <div style="flex: 1;">
+              <label style="font-weight: 700; color: var(--navy); display: block; margin-bottom: 10px; font-size: 1.1rem;">Adultos</label>
+              <select id="step2-qty-adults" style="width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #cbd5e1; font-size: 1rem; color: var(--navy); font-weight: 600;">
+                <option value="1">1 Persona</option>
+                <option value="2">2 Personas</option>
+                <option value="3">3 Personas</option>
+                <option value="4">4 Personas</option>
+                <option value="5">5 Personas</option>
+              </select>
+            </div>
+            <div style="flex: 1;">
+              <label style="font-weight: 700; color: var(--navy); display: block; margin-bottom: 10px; font-size: 1.1rem;">Niños (<11 años)</label>
+              <select id="step2-qty-children" style="width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #cbd5e1; font-size: 1rem; color: var(--navy); font-weight: 600;">
+                <option value="0">0 Niños</option>
+                <option value="1">1 Niño (50% dscto)</option>
+                <option value="2">2 Niños (50% dscto)</option>
+                <option value="3">3 Niños (50% dscto)</option>
+                <option value="4">4 Niños (50% dscto)</option>
+              </select>
+            </div>
           </div>
 
           <div class="field-group">
@@ -178,7 +190,7 @@
             Confirmar y Enviar por WhatsApp
           </button>
           <button class="btn btn-secondary" id="btn-confirm-booking-db" style="width: 100%; margin-top: 10px; background-color: #0f172a; color: white; padding: 12px; border-radius: 8px; font-weight: 700; border: none; cursor: pointer;">
-            Solo Registrar Reserva
+            Pagar y Generar Comprobante
           </button>
           <button class="btn btn-ghost" id="btn-back-step3" style="width: 100%; margin-top: 10px;">
             Volver a asientos
@@ -192,10 +204,16 @@
       <div style="width: 80px; height: 80px; background: #E8F5E9; color: #2E7D32; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px;">
         <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
       </div>
-      <h2 style="color: #2E7D32;">¡Reserva Confirmada!</h2>
+      <h2 style="color: #2E7D32;">¡Reserva Confirmada y Pagada!</h2>
+      <p style="font-size: 16px; color: var(--navy); margin-bottom: 5px;">Destino: <strong id="success-destination"></strong></p>
+      <p style="font-size: 16px; color: var(--navy); margin-bottom: 20px;">Fecha y Hora: <strong id="success-time"></strong></p>
       <p style="font-size: 16px; color: var(--navy);">Tu código de boleto es: <strong id="ticket-code" style="font-size: 20px; color: var(--orange);"></strong></p>
-      <p style="color: var(--mist); margin-bottom: 30px;">Hemos enviado un comprobante a tu correo electrónico.</p>
-      <a href="/" class="btn btn-primary">Volver al Inicio</a>
+      <p style="color: var(--mist); margin-bottom: 30px;">Hemos generado tu comprobante electrónico de pago.</p>
+      <div style="display: flex; gap: 15px; justify-content: center; margin-bottom: 20px; flex-wrap: wrap;">
+        <button id="btn-print-voucher" class="btn btn-secondary" style="background-color: #0f172a; color: white; padding: 12px 24px; border-radius: 8px; font-weight: 700; border: none; cursor: pointer;">Imprimir Comprobante</button>
+        <a href="https://wa.me/51930977607" target="_blank" class="btn btn-primary" style="padding: 12px 24px; background-color: #25D366; border-color: #25D366;">Comunicarse (WhatsApp)</a>
+        <a href="/" class="btn btn-primary" style="padding: 12px 24px;">Volver al Inicio</a>
+      </div>
     </div>
 
   </div>

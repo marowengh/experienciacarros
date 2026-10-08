@@ -30,21 +30,44 @@
       </a>
       
       <% if (locals.usuario) { %>
-        <div style="display: flex; align-items: center; gap: 12px; padding-right: 15px; border-right: 2px solid #e2e8f0; margin-right: 5px;">
-          <div style="width: 40px; height: 40px; border-radius: 50%; background: #f8fafc; color: #0f172a; border: 2px solid #B2D235; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 18px; box-shadow: 0 2px 8px rgba(178, 210, 53, 0.3);">
-            <%= locals.usuario.nombre.charAt(0).toUpperCase() %>
+        <div class="user-dropdown-container" style="position: relative; display: inline-block;">
+          <div style="display: flex; align-items: center; gap: 12px; padding-right: 15px; cursor: pointer; margin-right: 5px; border-right: 2px solid #e2e8f0;" id="userDropdownTrigger">
+            <div style="width: 40px; height: 40px; border-radius: 50%; background: #f8fafc; color: #0f172a; border: 2px solid #B2D235; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 18px; box-shadow: 0 2px 8px rgba(178, 210, 53, 0.3);">
+              <%= locals.usuario.nombre.charAt(0).toUpperCase() %>
+            </div>
+            <span style="font-size: 15px; font-weight: 700; color: #1e293b;"><%= locals.usuario.nombre %></span>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
           </div>
-          <span style="font-size: 15px; font-weight: 700; color: #1e293b;"><%= locals.usuario.nombre %></span>
+          <div class="user-dropdown-menu" id="userDropdownMenu" style="display: none; position: absolute; right: 0; top: 100%; background: #fff; box-shadow: 0 10px 25px rgba(0,0,0,0.1); border-radius: 8px; min-width: 220px; padding: 10px 0; z-index: 1000; margin-top: 10px; border: 1px solid #e2e8f0;">
+            <a href="/perfil" class="dropdown-item" style="display: block; padding: 10px 20px; color: #334155; font-weight: 600; text-decoration: none; transition: background 0.2s;">Mi Perfil / Configurar</a>
+            <a href="/mis-reservas" class="dropdown-item" style="display: block; padding: 10px 20px; color: #334155; font-weight: 600; text-decoration: none; transition: background 0.2s;">Mis Reservas</a>
+            <% if (locals.usuario.rol === 'admin') { %>
+              <a href="/admin" class="dropdown-item" style="display: block; padding: 10px 20px; color: #334155; font-weight: 600; text-decoration: none; transition: background 0.2s;">Panel de Administración</a>
+            <% } %>
+            <div style="border-top: 1px solid #e2e8f0; margin: 5px 0;"></div>
+            <a href="/api/logout" class="dropdown-item" style="display: block; padding: 10px 20px; color: #ef4444; font-weight: 600; text-decoration: none; transition: background 0.2s;">Cerrar Sesión</a>
+          </div>
         </div>
-        <a href="/perfil" class="btn" style="padding:10px 16px; background: #3b82f6; color: #fff; font-weight: 800; border: none; box-shadow: 0 4px 10px rgba(59,130,246,0.3); text-transform: uppercase; font-size: 0.8rem; letter-spacing: 0.5px;">
-          Mi Perfil
-        </a>
-        <a href="/mis-reservas" class="btn" style="padding:10px 16px; background: #FF1A1A; color: #fff; font-weight: 800; border: none; box-shadow: 0 4px 10px rgba(255,26,26,0.3); text-transform: uppercase; font-size: 0.8rem; letter-spacing: 0.5px;">
-          Mis Reservas
-        </a>
-        <a href="/api/logout" class="btn" style="padding:10px 16px; background: #F1F5F9; color: #334155;">
-          Cerrar Sesión
-        </a>
+        <script>
+          const userDropdownTrigger = document.getElementById('userDropdownTrigger');
+          const userDropdownMenu = document.getElementById('userDropdownMenu');
+          if(userDropdownTrigger) {
+            userDropdownTrigger.addEventListener('click', (e) => {
+              e.stopPropagation();
+              userDropdownMenu.style.display = userDropdownMenu.style.display === 'block' ? 'none' : 'block';
+            });
+            document.addEventListener('click', (e) => {
+              if(!userDropdownTrigger.contains(e.target) && !userDropdownMenu.contains(e.target)) {
+                userDropdownMenu.style.display = 'none';
+              }
+            });
+            const links = userDropdownMenu.querySelectorAll('.dropdown-item');
+            links.forEach(link => {
+              link.addEventListener('mouseenter', () => link.style.background = '#f1f5f9');
+              link.addEventListener('mouseleave', () => link.style.background = 'transparent');
+            });
+          }
+        </script>
       <% } else { %>
         <a href="/login" class="btn" style="padding:10px 16px; background: #B2D235; color: #fff; font-weight: bold;">
           Iniciar Sesión
@@ -154,8 +177,11 @@
         </div>
         <span style="font-size: 15px; font-weight: 700; color: #1e293b;"><%= locals.usuario.nombre %></span>
       </div>
-      <a href="/perfil" class="btn btn-primary" style="background: #3b82f6; color: #fff; margin-bottom: 10px;">Mi Perfil</a>
+      <a href="/perfil" class="btn btn-primary" style="background: #3b82f6; color: #fff; margin-bottom: 10px;">Mi Perfil / Configurar</a>
       <a href="/mis-reservas" class="btn btn-primary" style="background: #FF1A1A; color: #fff; margin-bottom: 10px;">Mis Reservas</a>
+      <% if (locals.usuario.rol === 'admin') { %>
+        <a href="/admin" class="btn btn-primary" style="background: #0f172a; color: #fff; margin-bottom: 10px;">Panel de Administración</a>
+      <% } %>
       <a href="/api/logout" class="btn btn-primary" style="background: #F1F5F9; color: #334155;">Cerrar Sesión</a>
     <% } else { %>
       <a href="/login" class="btn btn-primary" style="background: #B2D235; color: #fff;">Iniciar Sesión</a>

@@ -374,7 +374,7 @@
         const data = await res.json();
         
         if (res.ok) {
-          window.location.href = '/';
+          window.location.href = '/perfil';
         } else {
           showError(data.error || 'Error al iniciar sesión con Google');
         }
@@ -397,10 +397,10 @@
         const data = await res.json();
         
         if(res.ok) {
-          if (email === 'gerente@vision21.com' || email === 'admin@vision21.com' || email === 'marowengonzaleshl@gmail.com') {
+          if (data.rol === 'admin' || email === 'gerente@vision21.com' || email === 'admin@vision21.com' || email === 'marowengonzaleshl@gmail.com') {
             window.location.href = '/admin';
           } else {
-            window.location.href = '/';
+            window.location.href = '/perfil';
           }
         } else {
           showError(data.error || 'Error al iniciar sesión');
@@ -439,3 +439,4 @@
   </script>
 </body>
 </html>
+
