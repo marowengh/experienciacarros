@@ -118,13 +118,14 @@ document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('.btn-select-bus').forEach(btn => {
       btn.addEventListener('click', (e) => {
         const id = e.target.dataset.id;
-        const qty = parseInt(document.getElementById(`qty-${id}`).value) || 1;
+        const qtyAdults = parseInt(document.getElementById(`qty-${id}`).value) || 1;
         selectedBus = {
           id: id,
           precio: parseFloat(e.target.dataset.precio),
           servicio: e.target.dataset.servicio,
           hora: e.target.dataset.hora,
-          qty: qty
+          qtyAdults: qtyAdults,
+          qtyChildren: 0
         };
         goToStep2();
       });
@@ -138,13 +139,19 @@ document.addEventListener('DOMContentLoaded', () => {
     ind2.classList.add('active');
     
     // Sync initial qty from selectedBus
-    document.getElementById('step2-qty').value = selectedBus.qty;
+    document.getElementById('step2-qty-adults').value = selectedBus.qtyAdults;
+    document.getElementById('step2-qty-children').value = selectedBus.qtyChildren;
     updateSeatSummary();
   }
   
   // Listeners para las preferencias
-  document.getElementById('step2-qty').addEventListener('change', (e) => {
-    selectedBus.qty = parseInt(e.target.value);
+  document.getElementById('step2-qty-adults').addEventListener('change', (e) => {
+    selectedBus.qtyAdults = parseInt(e.target.value);
+    updateSeatSummary();
+  });
+  
+  document.getElementById('step2-qty-children').addEventListener('change', (e) => {
+    selectedBus.qtyChildren = parseInt(e.target.value);
     updateSeatSummary();
   });
 
@@ -166,10 +173,12 @@ document.addEventListener('DOMContentLoaded', () => {
   function updateSeatSummary() {
     const loc = document.querySelector('input[name="ubicacion"]:checked').value;
     
-    document.getElementById('summary-qty').textContent = `${selectedBus.qty} Persona(s)`;
+    const totalQty = selectedBus.qtyAdults + selectedBus.qtyChildren;
+    const textChildren = selectedBus.qtyChildren > 0 ? ` (+${selectedBus.qtyChildren} Niño/s)` : '';
+    document.getElementById('summary-qty').textContent = `${selectedBus.qtyAdults} Adulto(s)${textChildren}`;
     document.getElementById('summary-loc').textContent = loc;
     
-    const total = selectedBus.qty * selectedBus.precio;
+    const total = (selectedBus.qtyAdults * selectedBus.precio) + (selectedBus.qtyChildren * (selectedBus.precio / 2));
     document.getElementById('total-amount').textContent = total.toFixed(2);
   }
   
@@ -191,18 +200,21 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('summary-time').textContent = selectedBus.hora;
     document.getElementById('summary-service').textContent = selectedBus.servicio;
     
-    const total = selectedBus.qty * selectedBus.precio;
+    const total = (selectedBus.qtyAdults * selectedBus.precio) + (selectedBus.qtyChildren * (selectedBus.precio / 2));
     finalAmount.textContent = total.toFixed(2);
   });
   
   function renderPassengerForms() {
     const container = document.getElementById('passenger-fields-container');
     let html = '';
-    for (let i = 0; i < selectedBus.qty; i++) {
+    const totalPasajeros = selectedBus.qtyAdults + selectedBus.qtyChildren;
+    for (let i = 0; i < totalPasajeros; i++) {
       const defaultName = (i === 0 && window.USER_DATA) ? window.USER_DATA.nombre : '';
+      const isChild = i >= selectedBus.qtyAdults;
+      const passType = isChild ? "Pasajero (Niño)" : "Pasajero (Adulto)";
       html += `
       <div class="passenger-card">
-        <h4>Pasajero ${i + 1}</h4>
+        <h4>${passType} ${i + 1}</h4>
         <div class="field-row">
           <div class="field-group">
             <label>Tipo Documento</label>
@@ -234,7 +246,8 @@ document.addEventListener('DOMContentLoaded', () => {
     // Validar al menos un pasajero (el primero)
     const nameInput = document.querySelector('.pass-name');
     const docInput = document.querySelector('.pass-doc');
-    const total = (selectedBus.qty * selectedBus.precio).toFixed(2);
+    const totalPasajeros = selectedBus.qtyAdults + selectedBus.qtyChildren;
+    const total = ((selectedBus.qtyAdults * selectedBus.precio) + (selectedBus.qtyChildren * (selectedBus.precio / 2))).toFixed(2);
 
     if (!nameInput || !nameInput.value || !docInput || !docInput.value) {
       alert("Por favor completa los datos del pasajero.");
@@ -263,8 +276,11 @@ document.addEventListener('DOMContentLoaded', () => {
           nombre: passengerName,
           documento: passengerDoc,
           fecha: routeFecha,
-          cantidad: selectedBus.qty,
-          ubicacion: loc
+          cantidad: totalPasajeros,
+          cantidad_adultos: selectedBus.qtyAdults,
+          cantidad_ninos: selectedBus.qtyChildren,
+          ubicacion: loc,
+          totalPago: total
         })
       });
       
@@ -275,14 +291,14 @@ document.addEventListener('DOMContentLoaded', () => {
         btnConfirmBookingWhatsApp.disabled = false;
         btnConfirmBookingDB.disabled = false;
         btnConfirmBookingWhatsApp.textContent = 'Confirmar y Enviar por WhatsApp';
-        btnConfirmBookingDB.textContent = 'Solo Registrar Reserva';
+        btnConfirmBookingDB.textContent = 'Pagar y Generar Comprobante';
         return;
       }
 
       const ticketCode = data.codigoBoleto;
       
       if (useWhatsApp) {
-        const mensaje = `Hola, deseo confirmar mi pasaje en VISION 21.\n\nRuta: ${routeOrigen} a ${routeDestino}\nFecha: ${routeFecha}\nHora: ${selectedBus.hora}\nTipo: ${selectedBus.servicio}\nCantidad Pasajeros: ${selectedBus.qty}\nUbicación: ${loc}.\n\nMi nombre es ${passengerName} y mi DNI es ${passengerDoc}.\nMi código de reserva es: *${ticketCode}*\n\nAdjunto mi constancia de Yape / Transferencia por el monto total de S/ ${total}.`;
+        const mensaje = `Hola, deseo confirmar mi pasaje en VISION 21.\n\nRuta: ${routeOrigen} a ${routeDestino}\nFecha: ${routeFecha}\nHora: ${selectedBus.hora}\nTipo: ${selectedBus.servicio}\nCantidad Pasajeros: ${totalPasajeros} (${selectedBus.qtyAdults} Adultos, ${selectedBus.qtyChildren} Niños)\nUbicación: ${loc}.\n\nMi nombre es ${passengerName} y mi DNI es ${passengerDoc}.\nMi código de reserva es: *${ticketCode}*\n\nAdjunto mi constancia de Yape / Transferencia por el monto total de S/ ${total}.`;
         const numeroWhatsApp = '+51930977607';
         const url = `https://wa.me/${numeroWhatsApp}?text=${encodeURIComponent(mensaje)}`;
         window.open(url, '_blank');
@@ -293,6 +309,8 @@ document.addEventListener('DOMContentLoaded', () => {
       step4.classList.add('active');
       document.getElementById('ticket-code').textContent = ticketCode;
       document.getElementById('ticket-code').style.fontSize = "24px";
+      document.getElementById('success-destination').textContent = `${routeOrigen} a ${routeDestino}`;
+      document.getElementById('success-time').textContent = `${routeFecha} | ${selectedBus.hora}`;
       
     } catch(err) {
       console.error(err);
@@ -300,7 +318,7 @@ document.addEventListener('DOMContentLoaded', () => {
       btnConfirmBookingWhatsApp.disabled = false;
       btnConfirmBookingDB.disabled = false;
       btnConfirmBookingWhatsApp.textContent = 'Confirmar y Enviar por WhatsApp';
-      btnConfirmBookingDB.textContent = 'Solo Registrar Reserva';
+      btnConfirmBookingDB.textContent = 'Pagar y Generar Comprobante';
     }
   }
 
@@ -313,4 +331,55 @@ document.addEventListener('DOMContentLoaded', () => {
     e.preventDefault();
     processBooking(false);
   });
+  
+  // Voucher Generation logic
+  const btnPrintVoucher = document.getElementById('btn-print-voucher');
+  if (btnPrintVoucher) {
+    btnPrintVoucher.addEventListener('click', () => {
+      const ticketCode = document.getElementById('ticket-code').textContent;
+      const passengerName = document.querySelector('.pass-name').value;
+      const passengerDoc = document.querySelector('.pass-doc').value;
+      const total = (selectedBus.qty * selectedBus.precio).toFixed(2);
+      generarComprobante(ticketCode, passengerName, passengerDoc, routeOrigen, routeDestino, routeFecha, total);
+    });
+  }
+  
+  function generarComprobante(codigo, nombre, doc, origen, destino, fecha, total) {
+    const printWindow = window.open('', '_blank', 'width=800,height=600');
+    printWindow.document.write(`
+      <html>
+      <head>
+        <title>Comprobante - ${codigo}</title>
+        <style>
+          body { font-family: 'Inter', sans-serif; padding: 40px; color: #1e293b; }
+          .comprobante { border: 1px solid #e2e8f0; border-radius: 12px; padding: 30px; max-width: 600px; margin: 0 auto; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); }
+          .header { text-align: center; border-bottom: 2px solid #3b82f6; padding-bottom: 20px; margin-bottom: 20px; }
+          .header h1 { margin: 0; color: #1e3a8a; }
+          .row { display: flex; justify-content: space-between; margin-bottom: 15px; border-bottom: 1px dashed #cbd5e1; padding-bottom: 10px; }
+          .row strong { color: #475569; }
+          .total { font-size: 1.5em; font-weight: bold; color: #16a34a; text-align: right; margin-top: 20px; }
+          @media print { body { padding: 0; } .comprobante { box-shadow: none; border: none; } }
+        </style>
+      </head>
+      <body>
+        <div class="comprobante">
+          <div class="header">
+            <h1>Visión 21 S.A.C.</h1>
+            <p>Comprobante de Pago Electrónico</p>
+          </div>
+          <div class="row"><strong>Boleto Nro:</strong> <span>${codigo}</span></div>
+          <div class="row"><strong>Cliente:</strong> <span>${nombre}</span></div>
+          <div class="row"><strong>Documento:</strong> <span>${doc}</span></div>
+          <div class="row"><strong>Ruta:</strong> <span>${origen} - ${destino}</span></div>
+          <div class="row"><strong>Fecha de Viaje:</strong> <span>${fecha}</span></div>
+          <div class="total">Total Pagado: S/ ${total}</div>
+        </div>
+        <script>
+          window.onload = function() { window.print(); }
+        </script>
+      </body>
+      </html>
+    `);
+    printWindow.document.close();
+  }
 });
