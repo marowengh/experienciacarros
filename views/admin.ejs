@@ -652,7 +652,7 @@
       </div>
       <div class="form-group">
         <label>Teléfono</label>
-        <input type="text" id="usr_telefono">
+        <input type="tel" id="usr_telefono" pattern="[0-9]{9}" minlength="9" maxlength="9" title="Debe contener exactamente 9 dígitos numéricos" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
       </div>
       <div class="form-group">
         <label>Contraseña (Dejar en blanco si no se cambia)</label>
@@ -1256,7 +1256,21 @@
     }
   }
 
+  async function loadStats() {
+    try {
+      const res = await fetch('/api/admin/stats');
+      const stats = await res.json();
+      document.getElementById('dash-usuarios').textContent = stats.usuarios || 0;
+      document.getElementById('dash-reservas').textContent = stats.reservas || 0;
+      document.getElementById('dash-viajes').textContent = stats.viajes || 0;
+      document.getElementById('dash-ingresos').textContent = 'S/ ' + parseFloat(stats.ingresos || 0).toFixed(2);
+    } catch (e) {
+      console.error('Error cargando estadisticas:', e);
+    }
+  }
+
   loadViajes();
+  loadStats();
 </script>
 
 

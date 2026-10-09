@@ -304,7 +304,7 @@
         
         <div class="form-group">
           <label for="reg-telefono">Teléfono (Opcional)</label>
-          <input type="tel" id="reg-telefono" class="form-control" placeholder="987654321" pattern="[0-9]{9,15}" minlength="9" maxlength="15" title="Solo números (mínimo 9 dígitos)" required oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+          <input type="tel" id="reg-telefono" class="form-control" placeholder="987654321" pattern="[0-9]{9}" minlength="9" maxlength="9" title="Debe contener exactamente 9 dígitos numéricos" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
         </div>
 
         <div class="form-group">
@@ -397,7 +397,7 @@
         const data = await res.json();
         
         if(res.ok) {
-          if (data.rol === 'admin' || email === 'gerente@vision21.com' || email === 'admin@vision21.com' || email === 'marowengonzaleshl@gmail.com') {
+          if (data.rol === 'admin') {
             window.location.href = '/admin';
           } else {
             window.location.href = '/perfil';

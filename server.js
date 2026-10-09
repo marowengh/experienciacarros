@@ -226,11 +226,30 @@ app.get('/admin', (req, res) => {
     if (!req.session.usuario) {
         return res.redirect('/login');
     }
-    // Restringir por email específico (rol de admin)
-    if (req.session.usuario.email !== 'marowengonzaleshl@gmail.com' && req.session.usuario.email !== 'admin@vision21.com' && req.session.usuario.email !== 'gerente@vision21.com') {
+    // Restringir por rol de admin
+    if (req.session.usuario.rol !== 'admin') {
         return res.status(403).send('Acceso denegado. No eres administrador.');
     }
     res.render('admin');
+});
+
+// Obtener estadísticas para el dashboard
+app.get('/api/admin/stats', (req, res) => {
+    if (!req.session.usuario) return res.status(401).json({ error: 'No autorizado' });
+    const stats = { usuarios: 0, reservas: 0, viajes: 0, ingresos: 0 };
+    db.query('SELECT COUNT(*) AS total FROM usuarios', (err, rowsU) => {
+        if (!err && rowsU[0]) stats.usuarios = rowsU[0].total;
+        db.query('SELECT COUNT(*) AS total FROM reservas', (err, rowsR) => {
+            if (!err && rowsR[0]) stats.reservas = rowsR[0].total;
+            db.query('SELECT COUNT(*) AS total FROM viajes', (err, rowsV) => {
+                if (!err && rowsV[0]) stats.viajes = rowsV[0].total;
+                db.query('SELECT SUM(total_pagado) AS total FROM reservas', (err, rowsI) => {
+                    if (!err && rowsI[0]) stats.ingresos = rowsI[0].total || 0;
+                    res.json(stats);
+                });
+            });
+        });
+    });
 });
 
 // Obtener todos los viajes para el admin
@@ -530,7 +549,10 @@ app.post('/api/login', authLimiter, (req, res) => {
             needsPassword: usuario.password_hash === 'google_sso_dummy_hash'
         };
 
-        res.json({ success: true });
+        res.json({ 
+            success: true, 
+            rol: usuario.rol || 'user' 
+        });
     });
 });
 
