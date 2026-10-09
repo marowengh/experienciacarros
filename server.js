@@ -164,8 +164,25 @@ app.get('/api/destinos', (req, res) => {
 // Middleware para parsear JSON en el POST
 app.use(express.json());
 
+app.post('/api/validate-coupon', (req, res) => {
+    const { codigo } = req.body;
+    if (!codigo) return res.status(400).json({ success: false, message: 'Falta código' });
+    
+    db.query('SELECT * FROM cupones WHERE codigo = ? AND activo = TRUE', [codigo], (err, results) => {
+        if (err) return res.status(500).json({ success: false, message: 'Error de servidor' });
+        if (results.length === 0) return res.json({ success: false, message: 'Cupón inválido o inactivo' });
+        
+        const cupon = results[0];
+        if (cupon.usos_actuales >= cupon.limite_usos) {
+            return res.json({ success: false, message: 'Cupón agotado' });
+        }
+        
+        res.json({ success: true, descuento: cupon.descuento_porcentaje });
+    });
+});
+
 app.post('/api/reserva', (req, res) => {
-    const { viaje_id, nombre, documento, fecha, cantidad, cantidad_adultos, cantidad_ninos, ubicacion, totalPago } = req.body;
+    const { viaje_id, nombre, documento, fecha, cantidad, cantidad_adultos, cantidad_ninos, ubicacion, totalPago, metodo_pago, cupon, numero_operacion } = req.body;
     
     if (typeof viaje_id !== 'string' && typeof viaje_id !== 'number' || typeof nombre !== 'string' || typeof documento !== 'string' || typeof fecha !== 'string') {
         return res.status(400).json({ error: 'Formato de datos inválido' });
@@ -183,16 +200,27 @@ app.post('/api/reserva', (req, res) => {
     const ubi = ubicacion || 'Atrás';
     const tPago = totalPago ? parseFloat(totalPago) : 0;
 
+    const metodoPagoFinal = metodo_pago || 'Transferencia';
+    const cuponUsado = cupon || null;
+    const numOperacionFinal = numero_operacion || null;
+
     const sql = `
-        INSERT INTO reservas (viaje_id, usuario_id, cliente_nombre, cliente_documento, cantidad_pasajeros, cantidad_adultos, cantidad_ninos, ubicacion, fecha_viaje, codigo_boleto, total_pagado)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        INSERT INTO reservas (viaje_id, usuario_id, cliente_nombre, cliente_documento, cantidad_pasajeros, cantidad_adultos, cantidad_ninos, ubicacion, fecha_viaje, codigo_boleto, total_pagado, metodo_pago, cupon_usado, numero_operacion, estado_pago)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `;
 
-    db.query(sql, [viaje_id, usuario_id, nombre, documento, qty, qtyAdultos, qtyNinos, ubi, fecha, codigoBoleto, tPago], (err, result) => {
+    db.query(sql, [viaje_id, usuario_id, nombre, documento, qty, qtyAdultos, qtyNinos, ubi, fecha, codigoBoleto, tPago, metodoPagoFinal, cuponUsado, numOperacionFinal, 'Pendiente Validación'], (err, result) => {
         if (err) {
             console.error('Error al registrar la reserva:', err);
             return res.status(500).json({ error: 'Error al procesar la reserva' });
         }
+        
+        if (cuponUsado) {
+            db.query('UPDATE cupones SET usos_actuales = usos_actuales + 1 WHERE codigo = ?', [cuponUsado], (err2) => {
+                if (err2) console.error("Error actualizando usos del cupón:", err2);
+            });
+        }
+        
         console.log("Reserva insertada en BD con ID:", result.insertId);
         res.json({ success: true, codigoBoleto });
     });
@@ -470,7 +498,11 @@ app.post('/api/perfil', async (req, res) => {
 // --- Rutas de Autenticación ---
 app.get('/login', (req, res) => {
     if (req.session.usuario) {
-        return res.redirect('/');
+        if (req.session.usuario.rol === 'admin') {
+            return res.redirect('/admin');
+        } else {
+            return res.redirect('/perfil');
+        }
     }
     res.render('auth');
 });

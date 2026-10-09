@@ -157,6 +157,30 @@
       box-shadow: 0 0 0 4px rgba(249, 115, 22, 0.1);
     }
 
+    .password-container {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+    
+    .toggle-password {
+      position: absolute;
+      right: 12px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: #64748b;
+      padding: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: color 0.2s;
+    }
+
+    .toggle-password:hover {
+      color: var(--accent);
+    }
+
     .btn-submit {
       width: 100%;
       padding: 16px;
@@ -280,7 +304,12 @@
         </div>
         <div class="form-group">
           <label for="login-password">Contraseña</label>
-          <input type="password" id="login-password" class="form-control" placeholder="••••••••" required>
+          <div class="password-container">
+            <input type="password" id="login-password" class="form-control" placeholder="••••••••" required>
+            <button type="button" class="toggle-password" onclick="togglePasswordVisibility('login-password')">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+            </button>
+          </div>
         </div>
         <button type="submit" class="btn-submit">Ingresar</button>
       </form>
@@ -309,19 +338,31 @@
 
         <div class="form-group">
           <label for="reg-password">Contraseña</label>
-          <input type="password" id="reg-password" class="form-control" placeholder="Mínimo 6 caracteres" minlength="6" required>
+          <div class="password-container">
+            <input type="password" id="reg-password" class="form-control" placeholder="Mínimo 6 caracteres" minlength="6" required>
+            <button type="button" class="toggle-password" onclick="togglePasswordVisibility('reg-password')">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+            </button>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="reg-password-confirm">Confirmar Contraseña</label>
+          <div class="password-container">
+            <input type="password" id="reg-password-confirm" class="form-control" placeholder="Repite la contraseña" minlength="6" required>
+            <button type="button" class="toggle-password" onclick="togglePasswordVisibility('reg-password-confirm')">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+            </button>
+          </div>
         </div>
         <button type="submit" class="btn-submit">Registrarme</button>
       </form>
 
       <div class="divider">
-        <span>o continuar con</span>
+        <span>O</span>
       </div>
 
-      <div style="display: flex; flex-direction: column; align-items: center; gap: 15px;">
-        <p style="font-size: 13px; color: #64748b; text-align: center;">
-          ⚠️ <b>Aviso:</b> No puedes usar tu contraseña de Google en el formulario de arriba. Por seguridad, debes hacer clic en el botón oficial de abajo.
-        </p>
+      <div style="display: flex; flex-direction: column; align-items: center; margin-top: 10px;">
         <div id="buttonDiv"></div>
       </div>
 
@@ -338,7 +379,7 @@
         });
         google.accounts.id.renderButton(
           document.getElementById("buttonDiv"),
-          { theme: "outline", size: "large", type: "standard", text: "signin_with", width: 250 }
+          { theme: "outline", size: "large", type: "standard", text: "continue_with", width: 250, locale: "es_ES" }
         );
       } else {
         document.getElementById("buttonDiv").innerHTML = "<p style='color:red;font-size:12px;'>Error cargando Google API. Desactiva tu adblocker o verifica tu conexión.</p>";
@@ -417,6 +458,11 @@
       const email = document.getElementById('reg-email').value;
       const telefono = document.getElementById('reg-telefono').value;
       const password = document.getElementById('reg-password').value;
+      const confirmPassword = document.getElementById('reg-password-confirm').value;
+
+      if (password !== confirmPassword) {
+        return showError('Las contraseñas no coinciden. Por favor, verifica.');
+      }
 
       try {
         const res = await fetch('/api/registro', {
@@ -434,6 +480,20 @@
         }
       } catch(err) {
         showError('Error de conexión');
+      }
+    }
+
+    function togglePasswordVisibility(inputId) {
+      const input = document.getElementById(inputId);
+      const button = input.nextElementSibling;
+      if (input.type === 'password') {
+        input.type = 'text';
+        // Eye off icon
+        button.innerHTML = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>';
+      } else {
+        input.type = 'password';
+        // Eye icon
+        button.innerHTML = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>';
       }
     }
   </script>

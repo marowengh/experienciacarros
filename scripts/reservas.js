@@ -21,10 +21,27 @@ document.addEventListener('DOMContentLoaded', () => {
   const selectedSeatsList = document.getElementById('selected-seats-list');
   const totalAmount = document.getElementById('total-amount');
   const finalAmount = document.getElementById('final-amount');
+  const originalAmount = document.getElementById('original-amount');
+  
+  // Coupon and Yape Elements
+  const btnApplyCoupon = document.getElementById('btn-apply-coupon');
+  const couponCodeInput = document.getElementById('coupon-code');
+  const couponMessage = document.getElementById('coupon-message');
+  
+  const btnOpenPayment = document.getElementById('btn-open-payment');
+  const yapeModal = document.getElementById('yape-modal');
+  const btnCloseYape = document.getElementById('btn-close-yape');
+  const btnYapeConfirm = document.getElementById('btn-yape-confirm');
+  const yapeAmount = document.getElementById('yape-amount');
+  const yapeTimer = document.getElementById('yape-timer');
+  const yapeLoading = document.getElementById('yape-loading');
   
   // State
   let selectedBus = null;
   let selectedSeats = [];
+  let currentTotal = 0;
+  let discountPercentage = 0;
+  let yapeInterval = null;
   
   const routeOrigen = document.getElementById('route-origen').textContent;
   const routeDestino = document.getElementById('route-destino').textContent;
@@ -200,9 +217,60 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('summary-time').textContent = selectedBus.hora;
     document.getElementById('summary-service').textContent = selectedBus.servicio;
     
-    const total = (selectedBus.qtyAdults * selectedBus.precio) + (selectedBus.qtyChildren * (selectedBus.precio / 2));
-    finalAmount.textContent = total.toFixed(2);
+    currentTotal = (selectedBus.qtyAdults * selectedBus.precio) + (selectedBus.qtyChildren * (selectedBus.precio / 2));
+    updateFinalPrice();
   });
+  
+  // Lógica de Cupón
+  btnApplyCoupon.addEventListener('click', async () => {
+    const code = couponCodeInput.value.trim().toUpperCase();
+    if (!code) return;
+    
+    btnApplyCoupon.disabled = true;
+    btnApplyCoupon.textContent = '...';
+    
+    try {
+      const resp = await fetch('/api/validate-coupon', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ codigo: code })
+      });
+      const data = await resp.json();
+      
+      if (data.success) {
+        discountPercentage = data.descuento;
+        couponMessage.style.display = 'block';
+        couponMessage.style.color = '#059669';
+        couponMessage.textContent = `¡Cupón aplicado! ${discountPercentage}% de descuento.`;
+        updateFinalPrice();
+      } else {
+        discountPercentage = 0;
+        couponMessage.style.display = 'block';
+        couponMessage.style.color = '#dc2626';
+        couponMessage.textContent = data.message || 'Cupón inválido o agotado.';
+        updateFinalPrice();
+      }
+    } catch (err) {
+      console.error(err);
+      discountPercentage = 0;
+      updateFinalPrice();
+    } finally {
+      btnApplyCoupon.disabled = false;
+      btnApplyCoupon.textContent = 'Aplicar';
+    }
+  });
+
+  function updateFinalPrice() {
+    if (discountPercentage > 0) {
+      const discounted = currentTotal - (currentTotal * (discountPercentage / 100));
+      originalAmount.style.display = 'inline';
+      originalAmount.textContent = `S/ ${currentTotal.toFixed(2)}`;
+      finalAmount.textContent = discounted.toFixed(2);
+    } else {
+      originalAmount.style.display = 'none';
+      finalAmount.textContent = currentTotal.toFixed(2);
+    }
+  }
   
   function renderPassengerForms() {
     const container = document.getElementById('passenger-fields-container');
@@ -241,31 +309,56 @@ document.addEventListener('DOMContentLoaded', () => {
     ind3.classList.remove('active');
   });
   
-  // --- Paso 4: Generar WhatsApp y Guardar ---
-  async function processBooking(useWhatsApp) {
-    // Validar al menos un pasajero (el primero)
+  // --- Paso 4: Generar Reserva (Yape Flow) ---
+  btnOpenPayment.addEventListener('click', (e) => {
+    e.preventDefault();
+    
+    // Validar datos de pasajero antes de abrir Yape
     const nameInput = document.querySelector('.pass-name');
     const docInput = document.querySelector('.pass-doc');
-    const totalPasajeros = selectedBus.qtyAdults + selectedBus.qtyChildren;
-    const total = ((selectedBus.qtyAdults * selectedBus.precio) + (selectedBus.qtyChildren * (selectedBus.precio / 2))).toFixed(2);
+    const emailInput = document.getElementById('contact-email');
+    const phoneInput = document.getElementById('contact-phone');
 
-    if (!nameInput || !nameInput.value || !docInput || !docInput.value) {
-      alert("Por favor completa los datos del pasajero.");
+    if (!nameInput || !nameInput.value || !docInput || !docInput.value || !emailInput.value || !phoneInput.value) {
+      alert("Por favor completa los datos del pasajero y de contacto (Correo y Celular).");
+      return;
+    }
+    
+    // Resetear form
+    document.getElementById('yape-operacion').value = '';
+    
+    // Set Yape amount
+    yapeAmount.textContent = finalAmount.textContent;
+    yapeModal.style.display = 'flex';
+  });
+  
+  btnCloseYape.addEventListener('click', () => {
+    yapeModal.style.display = 'none';
+  });
+
+  btnYapeConfirm.addEventListener('click', () => {
+    const numOperacion = document.getElementById('yape-operacion').value.trim();
+    if (!numOperacion) {
+      alert('Por favor ingresa el número de operación que aparece en tu voucher de Yape.');
       return;
     }
 
+    // Animación de carga simulada
+    btnYapeConfirm.style.display = 'none';
+    yapeLoading.style.display = 'block';
+    
+    setTimeout(() => {
+      processBookingYape(numOperacion);
+    }, 2000); // 2 segundos de "verificación"
+  });
+
+  async function processBookingYape(numero_operacion) {
+    const nameInput = document.querySelector('.pass-name');
+    const docInput = document.querySelector('.pass-doc');
     const passengerName = nameInput.value;
     const passengerDoc = docInput.value;
+    const totalPasajeros = selectedBus.qtyAdults + selectedBus.qtyChildren;
     
-    btnConfirmBookingWhatsApp.disabled = true;
-    btnConfirmBookingDB.disabled = true;
-    
-    if (useWhatsApp) {
-      btnConfirmBookingWhatsApp.textContent = 'Procesando reserva...';
-    } else {
-      btnConfirmBookingDB.textContent = 'Procesando reserva...';
-    }
-
     try {
       const loc = document.querySelector('input[name="ubicacion"]:checked').value;
       const resp = await fetch('/api/reserva', {
@@ -280,57 +373,44 @@ document.addEventListener('DOMContentLoaded', () => {
           cantidad_adultos: selectedBus.qtyAdults,
           cantidad_ninos: selectedBus.qtyChildren,
           ubicacion: loc,
-          totalPago: total
+          totalPago: finalAmount.textContent,
+          metodo_pago: 'Yape',
+          cupon: couponCodeInput.value.trim().toUpperCase(),
+          numero_operacion: numero_operacion
         })
       });
       
       const data = await resp.json();
       
       if (!data.success) {
-        alert("Hubo un problema registrando tu reserva.");
-        btnConfirmBookingWhatsApp.disabled = false;
-        btnConfirmBookingDB.disabled = false;
-        btnConfirmBookingWhatsApp.textContent = 'Confirmar y Enviar por WhatsApp';
-        btnConfirmBookingDB.textContent = 'Pagar y Generar Comprobante';
+        alert("Hubo un problema registrando tu reserva en Yape.");
+        yapeModal.style.display = 'none';
+        btnYapeConfirm.style.display = 'block';
+        yapeLoading.style.display = 'none';
         return;
       }
 
-      const ticketCode = data.codigoBoleto;
-      
-      if (useWhatsApp) {
-        const mensaje = `Hola, deseo confirmar mi pasaje en VISION 21.\n\nRuta: ${routeOrigen} a ${routeDestino}\nFecha: ${routeFecha}\nHora: ${selectedBus.hora}\nTipo: ${selectedBus.servicio}\nCantidad Pasajeros: ${totalPasajeros} (${selectedBus.qtyAdults} Adultos, ${selectedBus.qtyChildren} Niños)\nUbicación: ${loc}.\n\nMi nombre es ${passengerName} y mi DNI es ${passengerDoc}.\nMi código de reserva es: *${ticketCode}*\n\nAdjunto mi constancia de Yape / Transferencia por el monto total de S/ ${total}.`;
-        const numeroWhatsApp = '+51930977607';
-        const url = `https://wa.me/${numeroWhatsApp}?text=${encodeURIComponent(mensaje)}`;
-        window.open(url, '_blank');
-      }
-
-      // Pasar a pantalla de éxito localmente
+      // Éxito
+      yapeModal.style.display = 'none';
       step3.classList.remove('active');
       step4.classList.add('active');
-      document.getElementById('ticket-code').textContent = ticketCode;
-      document.getElementById('ticket-code').style.fontSize = "24px";
-      document.getElementById('success-destination').textContent = `${routeOrigen} a ${routeDestino}`;
+      document.getElementById('ticket-code').textContent = data.codigoBoleto;
+      document.getElementById('success-barcode-text').textContent = data.codigoBoleto;
+      document.getElementById('success-origen').textContent = routeOrigen;
+      document.getElementById('success-destino').textContent = routeDestino;
+      document.getElementById('success-pasajero').textContent = passengerName;
+      document.getElementById('success-documento').textContent = passengerDoc;
+      document.getElementById('success-servicio').textContent = selectedBus.servicio || 'Especial';
       document.getElementById('success-time').textContent = `${routeFecha} | ${selectedBus.hora}`;
       
     } catch(err) {
       console.error(err);
       alert("Error de conexión al registrar la reserva.");
-      btnConfirmBookingWhatsApp.disabled = false;
-      btnConfirmBookingDB.disabled = false;
-      btnConfirmBookingWhatsApp.textContent = 'Confirmar y Enviar por WhatsApp';
-      btnConfirmBookingDB.textContent = 'Pagar y Generar Comprobante';
+      yapeModal.style.display = 'none';
+      btnYapeConfirm.style.display = 'block';
+      yapeLoading.style.display = 'none';
     }
   }
-
-  btnConfirmBookingWhatsApp.addEventListener('click', (e) => {
-    e.preventDefault();
-    processBooking(true);
-  });
-
-  btnConfirmBookingDB.addEventListener('click', (e) => {
-    e.preventDefault();
-    processBooking(false);
-  });
   
   // Voucher Generation logic
   const btnPrintVoucher = document.getElementById('btn-print-voucher');

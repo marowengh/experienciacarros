@@ -541,6 +541,8 @@
             <th>Pasajeros</th>
             <th>Ubicación</th>
             <th>Total Pago</th>
+            <th>Método / Estado</th>
+            <th>N° Operación</th>
             <th>Acciones</th>
           </tr>
         </thead>
@@ -947,6 +949,8 @@
           <td>${r.cantidad_pasajeros} Persona(s)</td>
           <td><span class="badge" style="background:#f1f5f9;color:#334155;">${r.ubicacion || 'Atrás'}</span></td>
           <td style="font-weight:bold; color:var(--admin-green);">S/ ${total.toFixed(2)}</td>
+          <td>${r.metodo_pago || 'Transferencia'}<br><small style="color:${r.estado_pago === 'Pendiente Validación' ? '#ca8a04' : '#64748b'};">${r.estado_pago || 'Pagado'}</small></td>
+          <td>${r.numero_operacion || '-'}</td>
           <td>
             <button class="btn-admin" style="background:#ca8a04;color:white;margin-bottom:4px;display:block;" onclick="generarComprobante('${r.codigo_boleto}', '${r.cliente_nombre}', '${r.cliente_documento}', '${r.origen}', '${r.destino}', '${fechaViaje}', '${total.toFixed(2)}')">Detalles</button>
             <button class="btn-admin btn-edit" style="margin-bottom:4px;" onclick="openReservaModal(${r.id})">Editar</button>
