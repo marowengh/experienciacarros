@@ -1,44 +1,188 @@
 <!-- ================= DESTINOS ================= -->
 <section id="destinos">
   <div class="container">
-    <div class="section-head" style="text-align: center; max-width: 800px; margin: 0 auto 50px auto;">
-      <div class="eyebrow" style="display: inline-block; padding: 8px 20px; background: rgba(178, 210, 53, 0.15); color: #7a931a; border-radius: 30px; font-weight: 800; text-transform: uppercase; letter-spacing: 2px; font-size: 0.85rem; margin-bottom: 15px; border: 1px solid rgba(178, 210, 53, 0.3);">
-        Explora Nuestras Rutas
+    <div class="dest-head-container">
+      
+      <!-- Live Status Pill -->
+      <div class="dest-live-pill">
+        <span class="pulse-dot"></span>
+        <span>Red Nacional Conectada · Hub Ayacucho</span>
       </div>
-      <h2 style="font-size: 2.8rem; font-weight: 800; color: var(--navy); margin-bottom: 20px; line-height: 1.2; letter-spacing: -1px;">
-        Movilidad de <span style="background: linear-gradient(135deg, #B2D235 0%, #0f172a 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Nueva Generación</span>
+
+      <!-- Main Section Title -->
+      <h2 class="dest-title">
+        Movilidad de <span class="dest-title-gradient">Nueva Generación</span>
       </h2>
-      <p style="font-size: 1.15rem; color: #64748b; line-height: 1.7; max-width: 650px; margin: 0 auto;">
+
+      <!-- Subtitle Description -->
+      <p class="dest-subtitle">
         Conexiones de alta eficiencia y precisión. Despliegues diarios desde nuestro Hub en Ayacucho hacia los principales nodos de la red nacional, garantizando confort absoluto y puntualidad.
       </p>
+
+      <!-- Executive Trust Metrics Bar -->
+      <div class="dest-metrics-bar">
+        <div class="dest-metric-item">
+          <div class="dest-metric-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          </div>
+          <div class="dest-metric-text">
+            <span class="dest-metric-val">99.4% Puntualidad</span>
+            <span class="dest-metric-label">Salidas programadas exactas</span>
+          </div>
+        </div>
+
+        <div class="dest-metric-sep"></div>
+
+        <div class="dest-metric-item">
+          <div class="dest-metric-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><circle cx="12" cy="10" r="3"/></svg>
+          </div>
+          <div class="dest-metric-text">
+            <span class="dest-metric-val">Monitoreo GPS 24/7</span>
+            <span class="dest-metric-label">Trazabilidad satelital en ruta</span>
+          </div>
+        </div>
+
+        <div class="dest-metric-sep"></div>
+
+        <div class="dest-metric-item">
+          <div class="dest-metric-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.5 2.8C2.1 10.9 2 11.1 2 11.4V16c0 .6.4 1 1 1h2"/><circle cx="7" cy="17" r="2"/><circle cx="17" cy="17" r="2"/></svg>
+          </div>
+          <div class="dest-metric-text">
+            <span class="dest-metric-val">Flota Ejecutiva VIP</span>
+            <span class="dest-metric-label">Asientos 160°, Clima y USB</span>
+          </div>
+        </div>
+
+        <div class="dest-metric-sep"></div>
+
+        <div class="dest-metric-item">
+          <div class="dest-metric-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          </div>
+          <div class="dest-metric-text">
+            <span class="dest-metric-val">Embarque Inmediato</span>
+            <span class="dest-metric-label">Boleto Digital con QR móvil</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Interactive Category Filter Pills with Executive Icons -->
+      <div class="dest-filters" id="dest-filters">
+        <button class="dest-filter-btn active" data-filter="all">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg>
+          <span>Todos los Destinos</span>
+        </button>
+        <button class="dest-filter-btn" data-filter="costa">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 21h18M5 21V7l8-4v18M13 21V11l6 3v7"/></svg>
+          <span>Costa & Capital</span>
+        </button>
+        <button class="dest-filter-btn" data-filter="sierra">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3l4 8 5-5 5 15H2L8 3z"/></svg>
+          <span>Sierra & Valles</span>
+        </button>
+        <button class="dest-filter-btn" data-filter="selva">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22v-9"/><path d="M12 13c-4.5 0-8-3-8-8 5 0 8 3.5 8 8z"/><path d="M12 9c3.5 0 6-2.5 6-6-4 0-6 2.5-6 6z"/></svg>
+          <span>Selva Alta & VRAE</span>
+        </button>
+      </div>
+
     </div>
   </div>
 
+  <!-- Carrusel Slider -->
   <div class="dest-slider-wrap">
-    <button class="nav-btn prev" id="dest-prev" aria-label="Anterior">&#8249;</button>
+    <!-- Botón Anterior -->
+    <button class="dest-nav-btn prev" id="dest-prev" aria-label="Destino anterior">
+      <svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>
+    </button>
 
     <div class="track-outer">
       <div class="track-inner" id="dest-inner">
 
         <% if (typeof destinos !== 'undefined' && destinos.length > 0) { %>
+          <% 
+            function getDestCategory(nombre) {
+              const n = (nombre || '').toLowerCase();
+              if (n.includes('lima') || n.includes('ica') || n.includes('arequipa')) return 'costa';
+              if (n.includes('vrae') || n.includes('mar')) return 'selva';
+              return 'sierra';
+            }
+          %>
           <% destinos.forEach(function(dest) { %>
-            <div class="dest-card-v2" style="position: relative;">
-              <!-- Corazón en la esquina superior derecha -->
-              <div style="position: absolute; top: 15px; right: 15px; z-index: 10; display: flex; align-items: center; justify-content: center;">
-                <svg style="width: 24px; height: 24px; color: #FF1A1A; cursor: pointer; transition: transform 0.2s; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));" onmouseover="this.style.transform='scale(1.15)'" onmouseout="this.style.transform='scale(1)'" fill="currentColor" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+            <% const category = getDestCategory(dest.nombre); %>
+            <div class="dest-card-v2" data-category="<%= category %>" data-destination="<%= dest.nombre %>">
+              
+              <!-- Top Bar: Badge de tiempo + Botón de Favoritos -->
+              <div class="dest-card-topbar">
+                <div class="dest-card-badges-group">
+                  <span class="card-badge-time">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                    <%= dest.tiempo_viaje %>
+                  </span>
+                  <span class="card-badge-tag">Directo</span>
+                </div>
+
+                <button class="dest-fav-btn" 
+                        aria-label="Añadir <%= dest.nombre %> a favoritos"
+                        title="Guardar destino en favoritos"
+                        onclick="toggleFavorito(event, '<%= dest.nombre %>')">
+                  <svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+                </button>
               </div>
 
-              <div class="card-photo <%= dest.clase_imagen %>"></div>
+              <!-- Foto de Destino con soporte dinámico -->
+              <div class="card-photo <%= dest.clase_imagen %>" <%- dest.clase_imagen && (dest.clase_imagen.includes('/') || dest.clase_imagen.includes('.')) ? 'style="background-image: url(\'' + dest.clase_imagen + '\');"' : '' %>></div>
+
+              <!-- Panel Glassmorphism Inferior -->
               <div class="card-glass">
-                <span class="card-badge"><%= dest.tiempo_viaje %></span>
+                <div class="dest-route-flow">
+                  <span>AYACUCHO</span>
+                  <span class="route-arrow">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                  </span>
+                  <span><%= dest.nombre.toUpperCase() %></span>
+                </div>
+
                 <h3><%= dest.nombre %></h3>
                 <p class="card-desc"><%= dest.descripcion %></p>
-                <div class="meta-row">
-                  <span class="meta-txt"><%= dest.frecuencia_salidas %></span>
-                  <span class="card-price"><%= dest.precio_base ? 'S/ ' + dest.precio_base : 'Consultar' %></span>
+
+                <!-- Micro-características con logotipos vectoriales limpios -->
+                <div class="dest-amenities-row">
+                  <span class="dest-amenity-pill">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+                    <span>Salida Diaria</span>
+                  </span>
+                  <span class="dest-amenity-pill">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 13h10v4H7z"/><path d="M4 17h16v3H4z"/><path d="M6 13V6a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v7"/></svg>
+                    <span>Confort VIP</span>
+                  </span>
+                  <span class="dest-amenity-pill">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                    <span>Seguro SOAT</span>
+                  </span>
                 </div>
-                <button class="cta-btn" onclick="reservarRuta('<%= dest.nombre %>', '<%= dest.precio_base ? 'S/ ' + dest.precio_base : 'Consultar' %>')">Reservar ahora →</button>
+
+                <div class="meta-row">
+                  <div class="dest-freq-box">
+                    <span class="meta-txt">
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                      <%= dest.frecuencia_salidas %>
+                    </span>
+                  </div>
+                  <div class="dest-price-box">
+                    <span class="dest-price-label">Tarifa desde</span>
+                    <span class="card-price"><%= dest.precio_base ? 'S/ ' + Number(dest.precio_base).toFixed(2) : 'Consultar' %></span>
+                  </div>
+                </div>
+
+                <button class="cta-btn" onclick="reservarRuta('<%= dest.nombre %>', '<%= dest.precio_base ? 'S/ ' + Number(dest.precio_base).toFixed(2) : 'Consultar' %>')">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M20.52 3.48A11.93 11.93 0 0 0 12.07 0C5.46 0 .08 5.38.08 12c0 2.11.55 4.18 1.6 6.01L0 24l6.19-1.62A11.9 11.9 0 0 0 12.07 24c6.61 0 12-5.38 12-12 0-3.21-1.25-6.23-3.55-8.52zM12.07 22c-1.8 0-3.56-.48-5.11-1.39l-.37-.22-3.8 1 1.01-3.7-.24-.38A9.95 9.95 0 0 1 2.08 12c0-5.51 4.48-10 10-10 2.67 0 5.18 1.04 7.07 2.93A9.93 9.93 0 0 1 22.07 12c0 5.51-4.48 10-10 10zm5.49-7.46c-.3-.15-1.78-.88-2.06-.98-.28-.1-.48-.15-.68.15-.2.3-.78.98-.95 1.18-.18.2-.35.23-.65.08-.3-.15-1.27-.47-2.42-1.5-.9-.8-1.5-1.79-1.68-2.09-.18-.3-.02-.46.13-.61.13-.13.3-.35.45-.53.15-.18.2-.3.3-.5.1-.2.05-.38-.03-.53-.07-.15-.68-1.64-.93-2.25-.24-.6-.49-.52-.68-.53h-.58c-.2 0-.53.08-.8.38-.28.3-1.05 1.03-1.05 2.51s1.08 2.91 1.23 3.11c.15.2 2.13 3.25 5.16 4.56.72.31 1.28.5 1.72.64.72.23 1.38.2 1.9.12.58-.09 1.78-.73 2.03-1.43.25-.7.25-1.31.18-1.43-.08-.13-.28-.2-.58-.35z"/></svg>
+                  <span>Reservar por WhatsApp</span>
+                </button>
               </div>
+
             </div>
           <% }); %>
         <% } %>
@@ -46,157 +190,305 @@
       </div>
     </div>
 
-    <button class="nav-btn next" id="dest-next" aria-label="Siguiente">&#8250;</button>
+    <!-- Botón Siguiente -->
+    <button class="dest-nav-btn next" id="dest-next" aria-label="Siguiente destino">
+      <svg viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg>
+    </button>
   </div>
 
-  <div class="dest-dots" id="dest-dots"></div>
+  <!-- Indicadores de Navegación (Dots) -->
+  <div class="dest-dots-wrap" id="dest-dots"></div>
 </section>
 
-<!-- Toast de reserva -->
+<!-- Toast de reserva y favoritos -->
 <div id="reserva-toast"></div>
 
 <script>
 (function(){
-  const PER_VIEW = window.innerWidth < 600 ? 1 : window.innerWidth < 900 ? 2 : window.innerWidth < 1200 ? 3 : 4;
-  const cards = document.querySelectorAll('.dest-card-v2');
   const inner = document.getElementById('dest-inner');
   const trackOuter = document.querySelector('.track-outer');
   const prevBtn = document.getElementById('dest-prev');
   const nextBtn = document.getElementById('dest-next');
   const dotsWrap = document.getElementById('dest-dots');
-  const total = cards.length;
-  const maxIdx = Math.max(0, total - PER_VIEW);
+  const filterBtns = document.querySelectorAll('.dest-filter-btn');
+  let allCards = Array.from(document.querySelectorAll('.dest-card-v2'));
+  let visibleCards = [...allCards];
+
   let cur = 0;
   let dotEls = [];
   let isDragging = false;
   let startX = 0;
-  let autoPlayInterval;
+  let currentTranslate = 0;
+  let prevTranslate = 0;
+  let autoPlayInterval = null;
+  let toastTimer = null;
+
+  function getPerView() {
+    const w = window.innerWidth;
+    if (w < 640) return 1;
+    if (w < 900) return 2;
+    if (w < 1200) return 3;
+    return 4;
+  }
+
+  function getMaxIdx() {
+    return Math.max(0, visibleCards.length - getPerView());
+  }
 
   function buildDots(){
     dotsWrap.innerHTML = '';
     dotEls = [];
-    for(let i = 0; i <= maxIdx; i++){
+    const max = getMaxIdx();
+    for(let i = 0; i <= max; i++){
       const d = document.createElement('div');
-      d.className = 'dest-dot' + (i === 0 ? ' active' : '');
-      d.onclick = () => { go(i); resetAutoPlay(); };
+      d.className = 'dest-dot' + (i === cur ? ' active' : '');
+      d.setAttribute('aria-label', `Ir a posición ${i + 1}`);
+      d.onclick = () => { 
+        go(i); 
+        resetAutoPlay(); 
+      };
       dotsWrap.appendChild(d);
       dotEls.push(d);
     }
   }
 
   function go(i){
-    // Permitir ciclo infinito (rotacional)
-    if (i > maxIdx) i = 0;
-    if (i < 0) i = maxIdx;
+    const max = getMaxIdx();
+    if (max <= 0) {
+      cur = 0;
+    } else {
+      if (i > max) i = 0;
+      if (i < 0) i = max;
+      cur = i;
+    }
 
-    cur = i;
     let cardW = 0;
-    if (cards.length > 0) {
-      cardW = cards[0].offsetWidth + 20; // ancho de tarjeta + margen (aprox)
+    if (visibleCards.length > 0) {
+      const cardRect = visibleCards[0].getBoundingClientRect();
+      const style = window.getComputedStyle(inner);
+      const gap = parseFloat(style.gap) || 22;
+      cardW = cardRect.width + gap;
     }
     
-    inner.style.transition = 'transform 0.4s ease-out';
-    inner.style.transform = `translateX(-${cur * cardW}px)`;
+    currentTranslate = -(cur * cardW);
+    prevTranslate = currentTranslate;
+    inner.style.transition = 'transform 0.45s cubic-bezier(0.2, 0.8, 0.2, 1)';
+    inner.style.transform = `translateX(${currentTranslate}px)`;
     
-    // Como es infinito, los botones nunca se desactivan
-    if(prevBtn) prevBtn.disabled = false;
-    if(nextBtn) nextBtn.disabled = false;
-
     dotEls.forEach((d, j) => {
       d.classList.toggle('active', j === cur);
     });
   }
 
   function startAutoPlay() {
-    if (cards.length === 0) return;
+    if (autoPlayInterval) clearInterval(autoPlayInterval);
+    if (visibleCards.length <= getPerView()) return;
     autoPlayInterval = setInterval(() => {
       go(cur + 1);
-    }, 3500); // Cambio cada 3.5 segundos (movimiento suave)
+    }, 4000);
   }
 
   function resetAutoPlay() {
-    clearInterval(autoPlayInterval);
+    if (autoPlayInterval) clearInterval(autoPlayInterval);
     startAutoPlay();
   }
 
-  prevBtn.onclick = () => { go(cur - 1); resetAutoPlay(); };
-  nextBtn.onclick = () => { go(cur + 1); resetAutoPlay(); };
-  
-  // Soporte para arrastre con el mouse (Drag)
-  trackOuter.style.cursor = 'grab';
-  
-  trackOuter.addEventListener('mousedown', (e) => {
-    isDragging = true;
-    startX = e.pageX;
-    trackOuter.style.cursor = 'grabbing';
-    clearInterval(autoPlayInterval); // Pausar autoplay al interactuar
+  if (prevBtn) {
+    prevBtn.onclick = () => { 
+      go(cur - 1); 
+      resetAutoPlay(); 
+    };
+  }
+
+  if (nextBtn) {
+    nextBtn.onclick = () => { 
+      go(cur + 1); 
+      resetAutoPlay(); 
+    };
+  }
+
+  // Filtrado por categorías interactivo
+  filterBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      filterBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const filter = btn.dataset.filter;
+
+      allCards.forEach(c => {
+        const cat = c.dataset.category;
+        if (filter === 'all' || cat === filter) {
+          c.style.display = 'flex';
+        } else {
+          c.style.display = 'none';
+        }
+      });
+
+      visibleCards = allCards.filter(c => c.style.display !== 'none');
+      cur = 0;
+      buildDots();
+      go(0);
+      resetAutoPlay();
+    });
   });
-  
-  trackOuter.addEventListener('mouseleave', () => {
-    if(isDragging) {
+
+  // Soporte Mouse Drag
+  if (trackOuter) {
+    trackOuter.style.cursor = 'grab';
+
+    trackOuter.addEventListener('mousedown', (e) => {
+      if (e.target.closest('button')) return;
+      isDragging = true;
+      startX = e.pageX;
+      trackOuter.style.cursor = 'grabbing';
+      inner.style.transition = 'none';
+      if (autoPlayInterval) clearInterval(autoPlayInterval);
+    });
+
+    window.addEventListener('mouseup', (e) => {
+      if (!isDragging) return;
       isDragging = false;
       trackOuter.style.cursor = 'grab';
-      startAutoPlay(); // Reanudar autoplay
-    }
-  });
-  
-  trackOuter.addEventListener('mouseup', (e) => {
-    if(!isDragging) return;
-    isDragging = false;
-    trackOuter.style.cursor = 'grab';
-    
-    const diffX = e.pageX - startX;
-    if (diffX > 50) {
-      go(cur - 1); // Deslizó hacia la derecha (ver anterior)
-    } else if (diffX < -50) {
-      go(cur + 1); // Deslizó hacia la izquierda (ver siguiente)
-    }
-    startAutoPlay();
-  });
-  
-  trackOuter.addEventListener('mousemove', (e) => {
-    if (!isDragging) return;
-    e.preventDefault(); // Evitar selección de texto
+      
+      const diffX = e.pageX - startX;
+      if (diffX > 60) {
+        go(cur - 1);
+      } else if (diffX < -60) {
+        go(cur + 1);
+      } else {
+        go(cur);
+      }
+      startAutoPlay();
+    });
+
+    trackOuter.addEventListener('mousemove', (e) => {
+      if (!isDragging) return;
+      e.preventDefault();
+      const diff = e.pageX - startX;
+      inner.style.transform = `translateX(${prevTranslate + diff}px)`;
+    });
+
+    // Touch Swipe Móvil
+    trackOuter.addEventListener('touchstart', (e) => {
+      if (e.target.closest('button')) return;
+      isDragging = true;
+      startX = e.touches[0].clientX;
+      inner.style.transition = 'none';
+      if (autoPlayInterval) clearInterval(autoPlayInterval);
+    }, {passive: true});
+
+    trackOuter.addEventListener('touchmove', (e) => {
+      if (!isDragging) return;
+      const diff = e.touches[0].clientX - startX;
+      inner.style.transform = `translateX(${prevTranslate + diff}px)`;
+    }, {passive: true});
+
+    trackOuter.addEventListener('touchend', (e) => {
+      if (!isDragging) return;
+      isDragging = false;
+      const endX = e.changedTouches[0].clientX;
+      const diffX = endX - startX;
+      if (diffX > 50) {
+        go(cur - 1);
+      } else if (diffX < -50) {
+        go(cur + 1);
+      } else {
+        go(cur);
+      }
+      startAutoPlay();
+    });
+
+    // Pausar autoplay al hacer hover con el mouse
+    trackOuter.addEventListener('mouseenter', () => {
+      if (autoPlayInterval) clearInterval(autoPlayInterval);
+    });
+
+    trackOuter.addEventListener('mouseleave', () => {
+      if (!isDragging) startAutoPlay();
+    });
+  }
+
+  // Recalcular en cambio de tamaño de ventana
+  let resizeTimeout;
+  window.addEventListener('resize', () => {
+    clearTimeout(resizeTimeout);
+    resizeTimeout = setTimeout(() => {
+      buildDots();
+      go(cur);
+    }, 150);
   });
 
-  // Soporte para gestos táctiles (Móviles)
-  trackOuter.addEventListener('touchstart', (e) => {
-    isDragging = true;
-    startX = e.touches[0].clientX;
-    clearInterval(autoPlayInterval);
-  }, {passive: true});
+  // Inicializar estado de Favoritos desde localStorage
+  function initFavoritesState() {
+    try {
+      const favs = JSON.parse(localStorage.getItem('v21_favoritos') || '[]');
+      allCards.forEach(card => {
+        const destName = card.dataset.destination;
+        if (favs.includes(destName)) {
+          const btn = card.querySelector('.dest-fav-btn');
+          if (btn) btn.classList.add('is-fav');
+        }
+      });
+    } catch(e){}
+  }
 
-  trackOuter.addEventListener('touchend', (e) => {
-    if(!isDragging) return;
-    isDragging = false;
-    const endX = e.changedTouches[0].clientX;
-    const diffX = endX - startX;
-    
-    if (diffX > 50) {
-      go(cur - 1);
-    } else if (diffX < -50) {
-      go(cur + 1);
+  window.toggleFavorito = function(event, name) {
+    event.stopPropagation();
+    try {
+      let favs = JSON.parse(localStorage.getItem('v21_favoritos') || '[]');
+      const idx = favs.indexOf(name);
+      let isAdded = false;
+      if (idx > -1) {
+        favs.splice(idx, 1);
+      } else {
+        favs.push(name);
+        isAdded = true;
+      }
+      localStorage.setItem('v21_favoritos', JSON.stringify(favs));
+      
+      const btn = event.currentTarget;
+      if (isAdded) {
+        btn.classList.add('is-fav');
+        showToast('<svg width="18" height="18" viewBox="0 0 24 24" fill="#FF334B"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg><span>Ruta <b>' + name + '</b> guardada en tus favoritos</span>');
+      } else {
+        btn.classList.remove('is-fav');
+        showToast('<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg><span>Ruta <b>' + name + '</b> removida de favoritos</span>');
+      }
+    } catch(e) {
+      console.error(e);
     }
-    startAutoPlay();
+  };
+
+  window.showToast = function(msg) {
+    const toast = document.getElementById('reserva-toast');
+    if (!toast) return;
+    toast.innerHTML = msg;
+    toast.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => {
+      toast.classList.remove('show');
+    }, 3000);
+  };
+
+  window.reservarRuta = function(dest, precio){
+    const precioTxt = (precio && precio !== 'Consultar') ? ' (Tarifa ref: ' + precio + ')' : '';
+    const msg = encodeURIComponent('Hola Vision 21, deseo consultar disponibilidad y comprar pasaje para la ruta Ayacucho - ' + dest + precioTxt + '. ¿Me podrían brindar los horarios?');
+    window.open('https://wa.me/51930977607?text=' + msg, '_blank');
+  };
+
+  // Entrada animada escalonada
+  allCards.forEach((c, i) => {
+    c.style.opacity = '0';
+    c.style.transform = 'translateY(16px)';
+    setTimeout(() => {
+      c.style.transition = 'opacity 0.4s ease, transform 0.4s ease';
+      c.style.opacity = '1';
+      c.style.transform = 'translateY(0)';
+    }, i * 50);
   });
 
   buildDots();
+  initFavoritesState();
   go(0);
   startAutoPlay();
-
-  window.reservarRuta = function(dest, precio){
-    // Redirigir a la página de reservas
-    window.location.href = '/reservar?destino=' + encodeURIComponent(dest);
-  };
-
-  cards.forEach((c, i) => {
-    c.style.opacity = '0';
-    c.style.transform = 'translateY(20px)';
-    setTimeout(() => {
-      c.style.transition = 'opacity .4s ease, transform .4s ease';
-      c.style.opacity = '1';
-      c.style.transform = 'translateY(0)';
-    }, i * 60);
-  });
 })();
 </script>
